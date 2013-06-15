@@ -10,6 +10,7 @@
 %% ===================================================================
 
 start(_StartType, _StartArgs) ->
+    ok = bootstrap_cowboy:start(),
     erl_shib_sup:start_link().
 
 stop(_State) ->
