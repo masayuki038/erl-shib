@@ -1,0 +1,69 @@
+<html>
+<head>
+<link href='/static/css/slate/bootstrap.css' rel='stylesheet'>
+<link href='/static/css/custom.css' rel='stylesheet'>
+<script type='text/javascript'>
+
+var ws = new WebSocket('ws://192.168.79.129:8080/websocket');
+ws.onopen = function() {
+    //alert("onopen");
+}
+
+ws.onmessage = function(msg) {
+    //alert("onmessage: " + msg.data);
+}
+
+ws.onclose = function(event) {
+    //alert("onclose");
+}
+
+send = function() {
+    var msg = document.getElementById("message").value;
+    ws.send(msg);
+}
+</script>
+</head>
+<body>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'></script>
+  <script src='/static/js/bootstrap.js'></script>
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand" href="#">erl-shib</a>
+        <div class="nav-collapse collapse">
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <header class="jumbotron subhead" id="overview">  
+      <div class="row">
+        <form>
+          <div>
+            <textarea class="input-xxlarge" id="text" rows="10"></textarea>
+          </div>
+          <div>
+            <a class="btn" href="#" onclick="">new query</a>
+            <a class="btn" href="#" onclick="send()">execute</a>
+          </div>
+          <div>
+            <a class="btn" href="#" onclick="">head</a>
+            <a class="btn" href="#" onclick="">download tsv</a>
+            <a class="btn" href="#" onclick="">download csv</a>
+          </div>
+        </form>
+      </div>
+    </header>
+  </div>
+</body>
+</html>
