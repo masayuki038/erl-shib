@@ -2,30 +2,12 @@
 <head>
 <link href='/static/css/slate/bootstrap.css' rel='stylesheet'>
 <link href='/static/css/custom.css' rel='stylesheet'>
-<script type='text/javascript'>
-
-var ws = new WebSocket('ws://192.168.79.129:8080/websocket');
-ws.onopen = function() {
-    //alert("onopen");
-}
-
-ws.onmessage = function(msg) {
-    //alert("onmessage: " + msg.data);
-}
-
-ws.onclose = function(event) {
-    //alert("onclose");
-}
-
-send = function() {
-    var msg = document.getElementById("message").value;
-    ws.send(msg);
-}
-</script>
 </head>
 <body>
-  <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js'></script>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>
   <script src='/static/js/bootstrap.js'></script>
+  <script src='/static/js/ws_events_dispatcher.js'></script>
+
   <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container">
@@ -50,20 +32,38 @@ send = function() {
       <div class="row">
         <form>
           <div>
-            <textarea class="input-xxlarge" id="text" rows="10"></textarea>
+            <textarea class="input-xxlarge" id="hql" rows="10"></textarea>
           </div>
           <div>
-            <a class="btn" href="#" onclick="">new query</a>
-            <a class="btn" href="#" onclick="send()">execute</a>
+            <a class="btn" href="#">new query</a>
+            <a class="btn" id="execute" href="#">execute</a>
           </div>
-          <div>
-            <a class="btn" href="#" onclick="">head</a>
-            <a class="btn" href="#" onclick="">download tsv</a>
-            <a class="btn" href="#" onclick="">download csv</a>
+          <div id="result_panel">
+            <a class="btn" href="#">delete</a>
+            <a class="btn" href="#">show full</a>
+            <a class="btn" href="#">show head</a>
+            <a class="btn" href="#">tsv</a>
+            <a class="btn" href="#">csv</a>
           </div>
         </form>
       </div>
     </header>
   </div>
+  <script type="text/javascript">
+    var server = new FancyWebSocket('ws://192.168.79.129:8080/websocket');
+    server.bind('open', function() {
+       // alert("FancyWebSocket#open");
+    });
+    server.bind('query_done', function(query) {
+        alert(query.id + " has done");
+        // set visible to result_panel
+        $("#result_panel").css("display", "visible");
+    });
+    $("#execute").click(function() {
+      alert($("#hql").val());
+      server.send('query_start', $('#hql').val());
+      return false;
+    });
+  </script>
 </body>
 </html>

@@ -13,20 +13,20 @@ init({tcp, http}, _Req, _Opts) ->
 
 websocket_init(_TransportName, Req, _Opts) -> 
     error_logger:info_report("websocket_init/3"),
-    erlang:start_timer(1000, self(), <<"Hello!">>),
-        {ok, Req, undefined_state}.
+    %%erlang:start_timer(1000, self(), <<"Hello!">>),
+    {ok, Req, undefined_state}.
  
 websocket_handle({text, Msg}, Req, State) ->
     error_logger:info_report("websocket_handle/3a"),
     error_logger:info_report(Msg),
-    {reply, {text, << "That's what she said! ", Msg/binary >>}, Req, State};
+    {reply, {text, json:encode([{"event", "query_done"}, {"data", {"id", "aaa"}}])}, Req, State};
 websocket_handle(_Data, Req, State) ->
     error_logger:info_report("websocket_handle/3b"),
     {ok, Req, State}.
  
 websocket_info({timeout, _Ref, Msg}, Req, State) ->
     error_logger:info_report("websocket_info/3a"),
-    erlang:start_timer(1000, self(), <<"How' you doin'?">>),
+    %%erlang:start_timer(1000, self(), <<"How' you doin'?">>),
     {reply, {text, Msg}, Req, State};
 websocket_info(_Info, Req, State) ->
     error_logger:info_report("websocket_info/3b"),
