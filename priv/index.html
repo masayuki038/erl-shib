@@ -50,14 +50,14 @@
     </header>
   </div>
   <script type="text/javascript">
-    var server = new FancyWebSocket('ws://wrap-trap.net:8080/websocket');
+    var server = new FancyWebSocket('ws://192.168.79.129:8080/websocket');
     server.bind('open', function() {
        // alert("FancyWebSocket#open");
     });
-    server.bind('query_done', function(query) {
+    server.bind('query_success', function(query) {
         alert(query.id + " has done");
         // set visible to result_panel
-        $("#result_panel").css("display", "visible");
+        $("#result_panel").show();
     });
     $("#execute").click(function() {
       //alert($("#hql").val());

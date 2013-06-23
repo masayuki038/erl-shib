@@ -11,3 +11,8 @@ json_encode2_test() ->
     JsonStr = jiffy:encode(In),
     ?debugVal(JsonStr),
     ?assertEqual(<<"{\"event\":\"query_done\",\"data\":{\"id\":\"aaa\"}}">>, JsonStr).
+
+json_decode_test() ->
+    In = <<"{\"event\":\"query_start\",\"data\":\"dsdsddddf\"}">>,
+    {[{_, _}, {_, Data}]} = jiffy:decode(In),
+    ?assertEqual(<<"dsdsddddf">>, Data).
