@@ -50,7 +50,7 @@
     </header>
   </div>
   <script type="text/javascript">
-    var server = new FancyWebSocket('ws://192.168.79.129:8080/websocket');
+    var server = new FancyWebSocket('ws://wrap-trap.net:8080/websocket');
     server.bind('open', function() {
        // alert("FancyWebSocket#open");
     });
@@ -60,7 +60,7 @@
         $("#result_panel").css("display", "visible");
     });
     $("#execute").click(function() {
-      alert($("#hql").val());
+      //alert($("#hql").val());
       server.send('query_start', $('#hql').val());
       return false;
     });

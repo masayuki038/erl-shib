@@ -19,7 +19,7 @@ websocket_init(_TransportName, Req, _Opts) ->
 websocket_handle({text, Msg}, Req, State) ->
     error_logger:info_report("websocket_handle/3a"),
     error_logger:info_report(Msg),
-    {reply, {text, json:encode([{"event", "query_done"}, {"data", {"id", "aaa"}}])}, Req, State};
+    {reply, {text, jiffy:encode({[{event, query_done}, {data, {[{id, aaa}]}}]})}, Req, State};
 websocket_handle(_Data, Req, State) ->
     error_logger:info_report("websocket_handle/3b"),
     {ok, Req, State}.
