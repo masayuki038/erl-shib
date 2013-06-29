@@ -23,7 +23,13 @@ add_history(H) ->
     mnesia:transaction(fun() -> mnesia:write(H) end).
 
 get_histories() ->
-    do(qlc:q([X || X <- mnesia:table(history)])).
+    do(qlc:sort(qlc:q([X || X <- mnesia:table(history)]),[{order,  
+        fun(H1, H2) ->
+            #history{end_at = End1} = H1,
+            #history{end_at = End2} = H2,
+            End1 > End2
+        end}])
+    ).
 
 do(Q) ->
     F = fun() -> qlc:e(Q) end,
