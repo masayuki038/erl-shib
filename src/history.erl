@@ -19,7 +19,7 @@ start() ->
 create_history(Query_id, Hql, Status, Start_at, End_at) ->
     #history{query_id = Query_id, hql = Hql, status = Status, start_at = Start_at, end_at = End_at}.
 
-add_history(H) ->
+update_history(H) ->
     mnesia:transaction(fun() -> mnesia:write(H) end).
 
 get_histories() ->
@@ -30,6 +30,11 @@ get_histories() ->
             End1 > End2
         end}])
     ).
+
+get_history(Qid) ->
+    F = fun() -> mnesia:read({history, Qid}) end,
+    {atomic, Val} = mnesia:transaction(F),
+    Val.	    	
 
 do(Q) ->
     F = fun() -> qlc:e(Q) end,
