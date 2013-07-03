@@ -7,6 +7,8 @@
 -export([websocket_info/3]).
 -export([websocket_terminate/3]).
 
+-include("history.hrl").
+
 init({tcp, http}, _Req, _Opts) ->
     error_logger:info_report("init/3"),
     {upgrade, protocol, cowboy_websocket}.
@@ -20,11 +22,11 @@ websocket_handle({text, Msg}, Req, State) ->
     error_logger:info_report("websocket_handle/3a"),
     error_logger:info_report(Msg),
     case jiffy:decode(Msg) of
-        {[{<<"event">>, <<"query_start">>}, {<<"data">>, Hql}]} -> 
-            {ok, Results} = fetch_all(Hql),
-            io:format("~p", [lists:map(fun(N) -> binary_to_list(N) end, Results)]),
+        {[{<<"event">>, <<"query_start">>}, {<<"data">>, Hql}]} ->
+            {ok, Updated} = execute_query(Hql),
+            #history{query_id = Qid} = Updated,
             {reply, 
-             {text, jiffy:encode({[{event, query_success}, {data, {[{id, aaa}]}}]})}, 
+             {text, jiffy:encode({[{event, query_success}, {data, {[{id, Qid}]}}]})}, 
              Req, State
             };
         _ ->
@@ -48,6 +50,19 @@ websocket_info(_Info, Req, State) ->
 websocket_terminate(_Reason, _Req, _State) -> 
     error_logger:info_report("websocket_terminate/3"),
     ok.
+
+execute_query(Hql) ->
+    Qid = hive_query:generate_id(Hql, erlang:localtime()),
+    History = create_history(Qid, Hql),
+    history:update_history(History),
+    {ok, Results} = fetch_all(Hql),
+    io:format("~p", [lists:map(fun(N) -> binary_to_list(N) end, Results)]),
+    Updated = History#history{results = Results, end_at = erlang:localtime()},
+    history:update_history(Updated),
+    {ok, Updated}.
+
+create_history(Qid, Hql) ->
+    #history{query_id = Qid, hql = Hql, status = prepare, start_at = erlang:localtime()}.
 
 fetch_all(Hql) ->
     {ok, C0} = get_connection(),

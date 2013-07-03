@@ -1,1 +1,1 @@
--record(history, {query_id, hql, status, start_at, end_at}).
+-record(history, {query_id, hql, status, results, start_at, end_at}).
