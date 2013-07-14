@@ -1,6 +1,7 @@
 .eunit
 ebin
 deps
+erl_shib.ini
 *.o
 *.beam
 *.plt

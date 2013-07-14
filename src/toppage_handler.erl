@@ -16,7 +16,9 @@ terminate(_Reason, _Req, _State) ->
     ok.
 
 get_html() ->
+    Host = econfig:get_value(erl_shib, "server", "host"),
+    Port = econfig:get_value(erl_shib, "server", "port"),
     {ok, Cwd} = file:get_cwd(),
     Filename = filename:join([Cwd, "priv", "index.html"]),
-    {ok, Binary} = file:read_file(Filename),
-    Binary.
+    {ok, Compiled} = sgte:compile_file(Filename),
+    sgte:render(Compiled, [{host, Host}, {port, Port}]).

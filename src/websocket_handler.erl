@@ -25,8 +25,9 @@ websocket_handle({text, Msg}, Req, State) ->
         {[{<<"event">>, <<"query_start">>}, {<<"data">>, Hql}]} ->
             {ok, Updated} = execute_query(Hql),
             #history{query_id = Qid} = Updated,
+            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
             {reply, 
-             {text, jiffy:encode({[{event, query_success}, {data, {[{id, Qid}]}}]})}, 
+             {text, jiffy:encode({[{event, query_success}, {data, {[{id, list_to_atom(Qid)}]}}]})}, 
              Req, State
             };
         _ ->
@@ -56,7 +57,7 @@ execute_query(Hql) ->
     History = create_history(Qid, Hql),
     history:update_history(History),
     {ok, Results} = fetch_all(Hql),
-    io:format("~p", [lists:map(fun(N) -> binary_to_list(N) end, Results)]),
+    %io:format("~p", [lists:map(fun(N) -> binary_to_list(N) end, Results)]),
     Updated = History#history{results = Results, end_at = erlang:localtime()},
     history:update_history(Updated),
     {ok, Updated}.
@@ -72,4 +73,9 @@ fetch_all(Hql) ->
     {ok, R2}.
 
 get_connection() ->
-    thrift_client_util:new("127.0.0.1", 10000, thriftHive_thrift, []).
+    Host = econfig:get_value(erl_shib, "hive", "host"),
+    Port = econfig:get_value(erl_shib, "hive", "port"),
+    error_logger:info_report(io:format("Host: ~p~n", [Host])),
+    error_logger:info_report(io:format("Port: ~p~n", [Port])),
+    thrift_client_util:new(Host, list_to_integer(Port), thriftHive_thrift, []).
+

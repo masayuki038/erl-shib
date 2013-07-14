@@ -50,7 +50,7 @@
     </header>
   </div>
   <script type="text/javascript">
-    var server = new FancyWebSocket('ws://192.168.79.129:8080/websocket');
+    var server = new FancyWebSocket('ws://$host$:$port$/websocket');
     server.bind('open', function() {
        // alert("FancyWebSocket#open");
     });

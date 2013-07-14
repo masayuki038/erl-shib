@@ -5,3 +5,7 @@ body {
 #result_panel {
   display: none;
 }
+
+textarea {
+  color: #222222;
+}
