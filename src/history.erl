@@ -34,7 +34,8 @@ get_histories() ->
 get_history(Qid) ->
     F = fun() -> mnesia:read({history, Qid}) end,
     {atomic, Val} = mnesia:transaction(F),
-    Val.	    	
+    [H|L] = Val,
+    H.	    	
 
 do(Q) ->
     F = fun() -> qlc:e(Q) end,

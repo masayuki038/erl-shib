@@ -42,20 +42,22 @@
             <a class="btn" href="#">delete</a>
             <a class="btn" href="#">show full</a>
             <a class="btn" href="#">show head</a>
-            <a class="btn" href="#">tsv</a>
-            <a class="btn" href="#">csv</a>
+            <a class="btn" id="tsv" href="#">tsv</a>
+            <a class="btn" id="csv" href="#">csv</a>
           </div>
         </form>
       </div>
     </header>
   </div>
   <script type="text/javascript">
+    var qid = null;
     var server = new FancyWebSocket('ws://$host$:$port$/websocket');
     server.bind('open', function() {
        // alert("FancyWebSocket#open");
     });
     server.bind('query_success', function(query) {
         alert(query.id + " has done");
+        qid = query.id;
         // set visible to result_panel
         $("#result_panel").show();
     });
@@ -63,6 +65,12 @@
       //alert($("#hql").val());
       server.send('query_start', $('#hql').val());
       return false;
+    });
+    $("#csv").click(function() {
+      location.href="/download/csv/" + qid;
+    });
+    $("#tsv").click(function() {
+      location.href="/download/tsv/" + qid;
     });
   </script>
 </body>

@@ -54,10 +54,13 @@ websocket_terminate(_Reason, _Req, _State) ->
 
 execute_query(Hql) ->
     Qid = hive_query:generate_id(Hql, erlang:localtime()),
+    error_logger:info_report(io_lib:format("generated id: ~p", [Qid])),
     History = create_history(Qid, Hql),
     history:update_history(History),
-    {ok, Results} = fetch_all(Hql),
-    %io:format("~p", [lists:map(fun(N) -> binary_to_list(N) end, Results)]),
+    {ok, ResultAsBinary} = fetch_all(Hql),
+    error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
+    Results = lists:map(fun(N) -> binary_to_list(N) end, ResultAsBinary),
+    error_logger:info_report(io_lib:format("Results size: : ~p", [length(Results)])),
     Updated = History#history{results = Results, end_at = erlang:localtime()},
     history:update_history(Updated),
     {ok, Updated}.

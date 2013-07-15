@@ -6,3 +6,4 @@ erl_shib.ini
 *.beam
 *.plt
 *~
+Mnesia.*

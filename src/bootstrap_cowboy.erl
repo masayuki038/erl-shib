@@ -10,10 +10,14 @@ start() ->
     ok = application:start(econfig),
     ok = econfig:register_config(erl_shib, ["./erl_shib.ini"], [autoreload]),
     true = econfig:subscribe(erl_shib),
+    history:do_this_once(),
+    history:start(),    
     Dispatch = cowboy_router:compile([
         {'_', [
             {"/", toppage_handler, []},
             {"/websocket", websocket_handler, []},
+            {"/download/csv/:qid", csv_download_handler, []},
+            {"/download/tsv/:qid", tsv_download_handler, []},
             {"/static/[...]", cowboy_static, [
                 {directory, {priv_dir, erl_shib, [<<"static">>]}},
                 {mimetypes, {fun mimetypes:path_to_mimes/2,default}}
