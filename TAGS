@@ -1,0 +1,482 @@
+
+src/bootstrap_cowboy.erl,70
+-module(bootstrap_cowboy).bootstrap_cowboy1,0
+start() ->start5,49
+
+src/csv_download_handler.erl,185
+-module(csv_download_handler).csv_download_handler1,0
+init(_Transport, Req, []) ->init9,123
+handle(Req, State) ->handle12,179
+terminate(_Reason, _Req, _State) ->terminate22,758
+
+src/default_handler.erl,182
+-module(default_handler).default_handler1,0
+init({tcp, http}, Req, Opts) ->init7,104
+handle(Req, State) ->    handle10,169
+terminate(_Reason, _Req, _State) ->terminate14,288
+
+src/erl_shib.erl,54
+-module(erl_shib).erl_shib1,0
+start() ->start4,40
+
+src/erl_shib_app.erl,114
+-module(erl_shib_app).erl_shib_app1,0
+start(_StartType, _StartArgs) ->start12,272
+stop(_State) ->stop16,372
+
+src/erl_shib_sup.erl,190
+-module(erl_shib_sup).erl_shib_sup2,1
+-define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).CHILD13,180
+start_link() ->start_link19,420
+init([]) ->init26,662
+
+src/facebookService_thrift.erl,2758
+-module(facebookService_thrift).facebookService_thrift7,122
+struct_info('i am a dummy struct') -> undefined.struct_info15,270
+function_info('getName', params_type) ->function_info18,349
+function_info('getName', reply_type) ->function_info21,407
+function_info('getName', exceptions) ->function_info23,457
+function_info('getVersion', params_type) ->function_info27,533
+function_info('getVersion', reply_type) ->function_info30,594
+function_info('getVersion', exceptions) ->function_info32,647
+function_info('getStatus', params_type) ->function_info36,725
+function_info('getStatus', reply_type) ->function_info39,785
+function_info('getStatus', exceptions) ->function_info41,834
+function_info('getStatusDetails', params_type) ->function_info45,918
+function_info('getStatusDetails', reply_type) ->function_info48,985
+function_info('getStatusDetails', exceptions) ->function_info50,1044
+function_info('getCounters', params_type) ->function_info54,1130
+function_info('getCounters', reply_type) ->function_info57,1192
+function_info('getCounters', exceptions) ->function_info59,1258
+function_info('getCounter', params_type) ->function_info63,1343
+function_info('getCounter', reply_type) ->function_info66,1415
+function_info('getCounter', exceptions) ->function_info68,1465
+function_info('setOption', params_type) ->function_info72,1555
+function_info('setOption', reply_type) ->function_info76,1649
+function_info('setOption', exceptions) ->function_info78,1707
+function_info('getOption', params_type) ->function_info82,1789
+function_info('getOption', reply_type) ->function_info85,1860
+function_info('getOption', exceptions) ->function_info87,1912
+function_info('getOptions', params_type) ->function_info91,1990
+function_info('getOptions', reply_type) ->function_info94,2051
+function_info('getOptions', exceptions) ->function_info96,2119
+function_info('getCpuProfile', params_type) ->function_info100,2223
+function_info('getCpuProfile', reply_type) ->function_info103,2295
+function_info('getCpuProfile', exceptions) ->function_info105,2351
+function_info('aliveSince', params_type) ->function_info109,2433
+function_info('aliveSince', reply_type) ->function_info112,2494
+function_info('aliveSince', exceptions) ->function_info114,2544
+function_info('reinitialize', params_type) ->function_info118,2625
+function_info('reinitialize', reply_type) ->function_info121,2688
+function_info('reinitialize', exceptions) ->function_info123,2748
+function_info('shutdown', params_type) ->function_info127,2827
+function_info('shutdown', reply_type) ->function_info130,2886
+function_info('shutdown', exceptions) ->function_info132,2942
+function_info(_Func, _Info) -> no_function.function_info135,3000
+
+src/fb303_types.erl,184
+-module(fb303_types).fb303_types7,122
+struct_info('i am a dummy struct') -> undefined.struct_info13,221
+struct_info_ext('i am a dummy struct') -> undefined.struct_info_ext15,271
+
+src/history.erl,457
+-module(history).history1,0
+do_this_once() ->do_this_once9,109
+start() ->start16,364
+create_history(Query_id, Hql, Status, Start_at, End_at) ->create_history20,442
+update_history(H) ->update_history23,603
+get_histories() ->get_histories26,679
+get_history(Qid) ->get_history35,920
+create_result(Query_id, Result) ->create_result41,1058
+update_result(R) ->	    	update_result44,1151
+get_result(Qid) ->get_result47,1232
+do(Q) ->do53,1374
+
+src/history_handler.erl,175
+-module(history_handler).history_handler1,0
+init(_Transport, Req, []) ->init9,118
+handle(Req, State) ->handle12,174
+terminate(_Reason, _Req, _State) ->terminate19,493
+
+src/hive_metastore_types.erl,3223
+-module(hive_metastore_types).hive_metastore_types7,122
+struct_info('version') ->struct_info13,239
+struct_info('fieldSchema') ->struct_info18,317
+struct_info('type') ->struct_info24,422
+struct_info('hiveObjectRef') ->struct_info31,594
+struct_info('privilegeGrantInfo') ->struct_info39,752
+struct_info('hiveObjectPrivilege') ->struct_info47,902
+struct_info('privilegeBag') ->struct_info54,1130
+struct_info('principalPrivilegeSet') ->struct_info58,1249
+struct_info('role') ->struct_info64,1583
+struct_info('database') ->struct_info70,1678
+struct_info('serDeInfo') ->struct_info78,1894
+struct_info('order') ->struct_info84,2012
+struct_info('storageDescriptor') ->struct_info89,2085
+struct_info('table') ->struct_info102,2513
+struct_info('partition') ->struct_info118,3005
+struct_info('index') ->struct_info129,3342
+struct_info('schema') ->struct_info142,3659
+struct_info('metaException') ->struct_info147,3802
+struct_info('unknownTableException') ->struct_info151,3863
+struct_info('unknownDBException') ->struct_info155,3932
+struct_info('alreadyExistsException') ->struct_info159,3998
+struct_info('invalidObjectException') ->struct_info163,4068
+struct_info('noSuchObjectException') ->struct_info167,4138
+struct_info('indexAlreadyExistsException') ->struct_info171,4207
+struct_info('invalidOperationException') ->struct_info175,4282
+struct_info('configValSecurityException') ->struct_info179,4355
+struct_info('i am a dummy struct') -> undefined.struct_info183,4429
+struct_info_ext('version') ->struct_info_ext185,4479
+struct_info_ext('fieldSchema') ->struct_info_ext190,4628
+struct_info_ext('type') ->struct_info_ext196,4830
+struct_info_ext('hiveObjectRef') ->struct_info_ext203,5120
+struct_info_ext('privilegeGrantInfo') ->struct_info_ext211,5451
+struct_info_ext('hiveObjectPrivilege') ->struct_info_ext219,5783
+struct_info_ext('privilegeBag') ->struct_info_ext226,6183
+struct_info_ext('principalPrivilegeSet') ->struct_info_ext230,6335
+struct_info_ext('role') ->struct_info_ext236,6797
+struct_info_ext('database') ->struct_info_ext242,7001
+struct_info_ext('serDeInfo') ->struct_info_ext250,7412
+struct_info_ext('order') ->struct_info_ext256,7643
+struct_info_ext('storageDescriptor') ->struct_info_ext261,7780
+struct_info_ext('table') ->struct_info_ext274,8547
+struct_info_ext('partition') ->struct_info_ext290,9529
+struct_info_ext('index') ->struct_info_ext301,10164
+struct_info_ext('schema') ->struct_info_ext314,10867
+struct_info_ext('metaException') ->struct_info_ext319,11082
+struct_info_ext('unknownTableException') ->struct_info_ext323,11180
+struct_info_ext('unknownDBException') ->struct_info_ext327,11286
+struct_info_ext('alreadyExistsException') ->struct_info_ext331,11389
+struct_info_ext('invalidObjectException') ->struct_info_ext335,11496
+struct_info_ext('noSuchObjectException') ->struct_info_ext339,11603
+struct_info_ext('indexAlreadyExistsException') ->struct_info_ext343,11709
+struct_info_ext('invalidOperationException') ->struct_info_ext347,11821
+struct_info_ext('configValSecurityException') ->struct_info_ext351,11931
+struct_info_ext('i am a dummy struct') -> undefined.struct_info_ext355,12042
+
+src/hive_query.erl,607
+-module(hive_query).hive_query1,0
+generate_id(Hql, Seed) ->generate_id6,89
+list_to_hex(L) ->list_to_hex11,299
+int_to_hex(N) when N < 256 ->int_to_hex14,365
+hex(N) when N < 10 ->hex17,432
+hex(N) when N >= 10, N < 16 ->hex19,466
+tuple_to_list_recursively({}) -> [];tuple_to_list_recursively22,523
+tuple_to_list_recursively([]) -> [];tuple_to_list_recursively23,560
+tuple_to_list_recursively(T) when is_tuple(T) ->tuple_to_list_recursively24,597
+tuple_to_list_recursively(T) when is_list(T) ->tuple_to_list_recursively26,695
+tuple_to_list_recursively(T) ->tuple_to_list_recursively29,839
+
+src/hive_service_types.erl,439
+-module(hive_service_types).hive_service_types7,122
+struct_info('hiveClusterStatus') ->struct_info13,235
+struct_info('hiveServerException') ->struct_info22,397
+struct_info('i am a dummy struct') -> undefined.struct_info28,507
+struct_info_ext('hiveClusterStatus') ->struct_info_ext30,557
+struct_info_ext('hiveServerException') ->struct_info_ext39,940
+struct_info_ext('i am a dummy struct') -> undefined.struct_info_ext45,1156
+
+src/queryplan_types.erl,885
+-module(queryplan_types).queryplan_types7,122
+struct_info('adjacency') ->struct_info13,229
+struct_info('graph') ->struct_info19,337
+struct_info('operator') ->struct_info25,485
+struct_info('task') ->struct_info34,676
+struct_info('stage') ->struct_info45,984
+struct_info('query') ->struct_info55,1234
+struct_info('queryPlan') ->struct_info66,1543
+struct_info('i am a dummy struct') -> undefined.struct_info72,1682
+struct_info_ext('adjacency') ->struct_info_ext74,1732
+struct_info_ext('graph') ->struct_info_ext80,1940
+struct_info_ext('operator') ->struct_info_ext86,2182
+struct_info_ext('task') ->struct_info_ext95,2602
+struct_info_ext('stage') ->struct_info_ext106,3190
+struct_info_ext('query') ->struct_info_ext116,3684
+struct_info_ext('queryPlan') ->struct_info_ext127,4273
+struct_info_ext('i am a dummy struct') -> undefined.struct_info_ext133,4505
+
+src/thriftHiveMetastore_thrift.erl,12573
+-module(thriftHiveMetastore_thrift).thriftHiveMetastore_thrift7,122
+struct_info('i am a dummy struct') -> undefined.struct_info15,278
+function_info('create_database', params_type) ->function_info18,375
+function_info('create_database', reply_type) ->function_info21,492
+function_info('create_database', exceptions) ->function_info23,556
+function_info('get_database', params_type) ->function_info29,858
+function_info('get_database', reply_type) ->function_info32,932
+function_info('get_database', exceptions) ->function_info34,1027
+function_info('drop_database', params_type) ->function_info39,1261
+function_info('drop_database', reply_type) ->function_info43,1357
+function_info('drop_database', exceptions) ->function_info45,1419
+function_info('get_databases', params_type) ->function_info51,1725
+function_info('get_databases', reply_type) ->function_info54,1800
+function_info('get_databases', exceptions) ->function_info56,1864
+function_info('get_all_databases', params_type) ->function_info60,2009
+function_info('get_all_databases', reply_type) ->function_info63,2077
+function_info('get_all_databases', exceptions) ->function_info65,2145
+function_info('alter_database', params_type) ->function_info69,2303
+function_info('alter_database', reply_type) ->function_info73,2442
+function_info('alter_database', exceptions) ->function_info75,2505
+function_info('get_type', params_type) ->function_info80,2724
+function_info('get_type', reply_type) ->function_info83,2794
+function_info('get_type', exceptions) ->function_info85,2881
+function_info('create_type', params_type) ->function_info90,3097
+function_info('create_type', reply_type) ->function_info93,3206
+function_info('create_type', exceptions) ->function_info95,3258
+function_info('drop_type', params_type) ->function_info101,3553
+function_info('drop_type', reply_type) ->function_info104,3624
+function_info('drop_type', exceptions) ->function_info106,3674
+function_info('get_type_all', params_type) ->function_info111,3892
+function_info('get_type_all', reply_type) ->function_info114,3966
+function_info('get_type_all', exceptions) ->function_info116,4072
+function_info('get_fields', params_type) ->function_info120,4230
+function_info('get_fields', reply_type) ->function_info124,4325
+function_info('get_fields', exceptions) ->function_info126,4429
+function_info('get_schema', params_type) ->function_info132,4734
+function_info('get_schema', reply_type) ->function_info136,4829
+function_info('get_schema', exceptions) ->function_info138,4933
+function_info('create_table', params_type) ->function_info144,5224
+function_info('create_table', reply_type) ->function_info147,5335
+function_info('create_table', exceptions) ->function_info149,5396
+function_info('drop_table', params_type) ->function_info156,5789
+function_info('drop_table', reply_type) ->function_info161,5905
+function_info('drop_table', exceptions) ->function_info163,5964
+function_info('get_tables', params_type) ->function_info168,6193
+function_info('get_tables', reply_type) ->function_info172,6288
+function_info('get_tables', exceptions) ->function_info174,6349
+function_info('get_all_tables', params_type) ->function_info178,6497
+function_info('get_all_tables', reply_type) ->function_info181,6573
+function_info('get_all_tables', exceptions) ->function_info183,6638
+function_info('get_table', params_type) ->function_info187,6794
+function_info('get_table', reply_type) ->function_info191,6888
+function_info('get_table', exceptions) ->function_info193,6977
+function_info('alter_table', params_type) ->function_info198,7215
+function_info('alter_table', reply_type) ->function_info203,7371
+function_info('alter_table', exceptions) ->function_info205,7431
+function_info('add_partition', params_type) ->function_info210,7660
+function_info('add_partition', reply_type) ->function_info213,7776
+function_info('add_partition', exceptions) ->function_info215,7873
+function_info('append_partition', params_type) ->function_info221,8201
+function_info('append_partition', reply_type) ->function_info226,8333
+function_info('append_partition', exceptions) ->function_info228,8433
+function_info('append_partition_by_name', params_type) ->function_info234,8772
+function_info('append_partition_by_name', reply_type) ->function_info239,8904
+function_info('append_partition_by_name', exceptions) ->function_info241,9012
+function_info('drop_partition', params_type) ->function_info247,9361
+function_info('drop_partition', reply_type) ->function_info253,9512
+function_info('drop_partition', exceptions) ->function_info255,9567
+function_info('drop_partition_by_name', params_type) ->function_info260,9836
+function_info('drop_partition_by_name', reply_type) ->function_info266,9987
+function_info('drop_partition_by_name', exceptions) ->function_info268,10050
+function_info('get_partition', params_type) ->function_info273,10306
+function_info('get_partition', reply_type) ->function_info278,10435
+function_info('get_partition', exceptions) ->function_info280,10532
+function_info('get_partition_with_auth', params_type) ->function_info285,10813
+function_info('get_partition_with_auth', reply_type) ->function_info292,11006
+function_info('get_partition_with_auth', exceptions) ->function_info294,11113
+function_info('get_partition_by_name', params_type) ->function_info299,11378
+function_info('get_partition_by_name', reply_type) ->function_info304,11507
+function_info('get_partition_by_name', exceptions) ->function_info306,11612
+function_info('get_partitions', params_type) ->function_info311,11868
+function_info('get_partitions', reply_type) ->function_info316,11987
+function_info('get_partitions', exceptions) ->function_info318,12093
+function_info('get_partitions_with_auth', params_type) ->function_info323,12376
+function_info('get_partitions_with_auth', reply_type) ->function_info330,12559
+function_info('get_partitions_with_auth', exceptions) ->function_info332,12675
+function_info('get_partition_names', params_type) ->function_info337,12939
+function_info('get_partition_names', reply_type) ->function_info342,13063
+function_info('get_partition_names', exceptions) ->function_info344,13133
+function_info('get_partitions_ps', params_type) ->function_info348,13325
+function_info('get_partitions_ps', reply_type) ->function_info354,13478
+function_info('get_partitions_ps', exceptions) ->function_info356,13587
+function_info('get_partitions_ps_with_auth', params_type) ->function_info360,13811
+function_info('get_partitions_ps_with_auth', reply_type) ->function_info368,14028
+function_info('get_partitions_ps_with_auth', exceptions) ->function_info370,14147
+function_info('get_partition_names_ps', params_type) ->function_info375,14428
+function_info('get_partition_names_ps', reply_type) ->function_info381,14586
+function_info('get_partition_names_ps', exceptions) ->function_info383,14659
+function_info('get_partitions_by_filter', params_type) ->function_info387,14858
+function_info('get_partitions_by_filter', reply_type) ->function_info393,15010
+function_info('get_partitions_by_filter', exceptions) ->function_info395,15126
+function_info('alter_partition', params_type) ->function_info400,15385
+function_info('alter_partition', reply_type) ->function_info405,15549
+function_info('alter_partition', exceptions) ->function_info407,15613
+function_info('get_config_value', params_type) ->function_info412,15859
+function_info('get_config_value', reply_type) ->function_info416,15960
+function_info('get_config_value', exceptions) ->function_info418,16019
+function_info('partition_name_to_vals', params_type) ->function_info422,16196
+function_info('partition_name_to_vals', reply_type) ->function_info425,16280
+function_info('partition_name_to_vals', exceptions) ->function_info427,16353
+function_info('partition_name_to_spec', params_type) ->function_info431,16523
+function_info('partition_name_to_spec', reply_type) ->function_info434,16607
+function_info('partition_name_to_spec', exceptions) ->function_info436,16687
+function_info('add_index', params_type) ->function_info440,16857
+function_info('add_index', reply_type) ->function_info444,17025
+function_info('add_index', exceptions) ->function_info446,17114
+function_info('alter_index', params_type) ->function_info452,17445
+function_info('alter_index', reply_type) ->function_info458,17624
+function_info('alter_index', exceptions) ->function_info460,17684
+function_info('drop_index_by_name', params_type) ->function_info465,17951
+function_info('drop_index_by_name', reply_type) ->function_info471,18098
+function_info('drop_index_by_name', exceptions) ->function_info473,18157
+function_info('get_index_by_name', params_type) ->function_info478,18414
+function_info('get_index_by_name', reply_type) ->function_info483,18539
+function_info('get_index_by_name', exceptions) ->function_info485,18636
+function_info('get_indexes', params_type) ->function_info490,18887
+function_info('get_indexes', reply_type) ->function_info495,19003
+function_info('get_indexes', exceptions) ->function_info497,19102
+function_info('get_index_names', params_type) ->function_info502,19351
+function_info('get_index_names', reply_type) ->function_info507,19471
+function_info('get_index_names', exceptions) ->function_info509,19537
+function_info('create_role', params_type) ->function_info513,19684
+function_info('create_role', reply_type) ->function_info516,19793
+function_info('create_role', exceptions) ->function_info518,19845
+function_info('drop_role', params_type) ->function_info522,19991
+function_info('drop_role', reply_type) ->function_info525,20062
+function_info('drop_role', exceptions) ->function_info527,20112
+function_info('get_role_names', params_type) ->function_info531,20250
+function_info('get_role_names', reply_type) ->function_info534,20315
+function_info('get_role_names', exceptions) ->function_info536,20380
+function_info('grant_role', params_type) ->function_info540,20598
+function_info('grant_role', reply_type) ->function_info548,20777
+function_info('grant_role', exceptions) ->function_info550,20828
+function_info('revoke_role', params_type) ->function_info554,21007
+function_info('revoke_role', reply_type) ->function_info559,21123
+function_info('revoke_role', exceptions) ->function_info561,21175
+function_info('list_roles', params_type) ->function_info565,21343
+function_info('list_roles', reply_type) ->function_info569,21435
+function_info('list_roles', exceptions) ->function_info571,21532
+function_info('get_privilege_set', params_type) ->function_info575,21710
+function_info('get_privilege_set', reply_type) ->function_info580,21888
+function_info('get_privilege_set', exceptions) ->function_info582,22001
+function_info('list_privileges', params_type) ->function_info586,22192
+function_info('list_privileges', reply_type) ->function_info591,22357
+function_info('list_privileges', exceptions) ->function_info593,22474
+function_info('grant_privileges', params_type) ->function_info597,22632
+function_info('grant_privileges', reply_type) ->function_info600,22754
+function_info('grant_privileges', exceptions) ->function_info602,22811
+function_info('revoke_privileges', params_type) ->function_info606,22971
+function_info('revoke_privileges', reply_type) ->function_info609,23094
+function_info('revoke_privileges', exceptions) ->function_info611,23152
+function_info('get_delegation_token', params_type) ->function_info615,23337
+function_info('get_delegation_token', reply_type) ->function_info618,23419
+function_info('get_delegation_token', exceptions) ->function_info620,23482
+function_info('get_delegation_token_with_signature', params_type) ->function_info624,23702
+function_info('get_delegation_token_with_signature', reply_type) ->function_info628,23822
+function_info('get_delegation_token_with_signature', exceptions) ->function_info630,23900
+function_info('renew_delegation_token', params_type) ->function_info634,24088
+function_info('renew_delegation_token', reply_type) ->function_info637,24172
+function_info('renew_delegation_token', exceptions) ->function_info639,24234
+function_info('cancel_delegation_token', params_type) ->function_info643,24410
+function_info('cancel_delegation_token', reply_type) ->function_info646,24495
+function_info('cancel_delegation_token', exceptions) ->function_info648,24567
+function_info(Function, InfoType) ->function_info651,24696
+
+src/thriftHive_thrift.erl,1922
+-module(thriftHive_thrift).thriftHive_thrift7,122
+struct_info('i am a dummy struct') -> undefined.struct_info15,260
+function_info('execute', params_type) ->function_info18,346
+function_info('execute', reply_type) ->function_info21,415
+function_info('execute', exceptions) ->function_info23,471
+function_info('fetchOne', params_type) ->function_info27,605
+function_info('fetchOne', reply_type) ->function_info30,664
+function_info('fetchOne', exceptions) ->function_info32,715
+function_info('fetchN', params_type) ->function_info36,857
+function_info('fetchN', reply_type) ->function_info39,922
+function_info('fetchN', exceptions) ->function_info41,979
+function_info('fetchAll', params_type) ->function_info45,1112
+function_info('fetchAll', reply_type) ->function_info48,1171
+function_info('fetchAll', exceptions) ->function_info50,1230
+function_info('getSchema', params_type) ->function_info54,1366
+function_info('getSchema', reply_type) ->function_info57,1426
+function_info('getSchema', exceptions) ->function_info59,1516
+function_info('getThriftSchema', params_type) ->function_info63,1659
+function_info('getThriftSchema', reply_type) ->function_info66,1725
+function_info('getThriftSchema', exceptions) ->function_info68,1821
+function_info('getClusterStatus', params_type) ->function_info72,1971
+function_info('getClusterStatus', reply_type) ->function_info75,2038
+function_info('getClusterStatus', exceptions) ->function_info77,2144
+function_info('getQueryPlan', params_type) ->function_info81,2291
+function_info('getQueryPlan', reply_type) ->function_info84,2354
+function_info('getQueryPlan', exceptions) ->function_info86,2445
+function_info('clean', params_type) ->function_info90,2581
+function_info('clean', reply_type) ->function_info93,2637
+function_info('clean', exceptions) ->function_info95,2691
+function_info(Function, InfoType) ->function_info98,2746
+
+src/thrift_hive.erl,289
+-module(thrift_hive).thrift_hive1,0
+fetch_one(Hql) ->fetch_one8,192
+fetch_all(Hql) ->fetch_all15,407
+fetch_all_async(Hql) ->fetch_all_async22,650
+get_cluster_status() ->get_cluster_status28,844
+get_query_plan() ->get_query_plan33,982
+get_connection() ->get_connection38,1112
+
+src/thrift_hive_app.erl,120
+-module(thrift_hive_app).thrift_hive_app1,0
+start(_StartType, _StartArgs) ->start12,275
+stop(_State) ->stop15,343
+
+src/thrift_hive_sup.erl,196
+-module(thrift_hive_sup).thrift_hive_sup2,1
+-define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).CHILD13,183
+start_link() ->start_link19,423
+init([]) ->init26,665
+
+src/toppage_handler.erl,204
+-module(toppage_handler).toppage_handler1,0
+init(_Transport, Req, []) ->init7,92
+handle(Req, State) ->handle10,148
+terminate(_Reason, _Req, _State) ->terminate15,309
+get_html() ->get_html18,354
+
+src/tsv_download_handler.erl,185
+-module(tsv_download_handler).tsv_download_handler1,0
+init(_Transport, Req, []) ->init9,123
+handle(Req, State) ->handle12,179
+terminate(_Reason, _Req, _State) ->terminate22,726
+
+src/websocket_handler.erl,682
+-module(websocket_handler).websocket_handler1,0
+init({tcp, http}, _Req, _Opts) ->init12,236
+websocket_init(_TransportName, Req, _Opts) -> websocket_init16,354
+websocket_handle({text, Msg}, Req, State) ->websocket_handle21,539
+websocket_handle(_Data, Req, State) ->websocket_handle39,1269
+websocket_info({timeout, _Ref, Msg}, Req, State) ->websocket_info43,1385
+websocket_info(_Info, Req, State) ->websocket_info47,1589
+websocket_terminate(_Reason, _Req, _State) -> websocket_terminate51,1701
+execute_query(Hql) ->execute_query55,1812
+create_history(Qid, Hql) ->create_history68,2497
+fetch_all(Hql) ->fetch_all71,2620
+get_connection() ->get_connection78,2863
+
+test/history_tests.erl,424
+-module(history_tests).history_tests1,0
+do_this_once_test() ->do_this_once_test5,91
+update_history_test() ->update_history_test8,143
+update_history2_test() ->update_history2_test18,412
+get_history_test() ->get_history_test31,763
+update_test() ->update_test39,955
+histories_to_json_test() ->histories_to_json_test51,1295
+create_history1() ->create_history165,1763
+create_history2() ->create_history271,2055
+
+test/hive_query_tests.erl,152
+-module(hive_query_tests).hive_query_tests1,0
+md5_test() ->md5_test4,69
+tuple_to_list_recursively1_test() ->tuple_to_list_recursively1_test10,265
+
+test/thrift_hive_tests.erl,191
+-module(thrift_hive_tests).thrift_hive_tests1,0
+fetchOne_test_() ->fetchOne_test_4,70
+fetchAll_test_() ->fetchAll_test_11,225
+getClusterStatus_test_() -> getClusterStatus_test_25,692
+
+test/websocket_handler_tests.erl,291
+-module(websocket_handler_tests).websocket_handler_tests1,0
+json_encode1_test() ->json_encode1_test4,76
+json_encode2_test() ->json_encode2_test9,287
+json_decode_test() ->json_decode_test15,511
+date_format_test() ->date_format_test20,688
+date_parse_test() ->date_parse_test24,815

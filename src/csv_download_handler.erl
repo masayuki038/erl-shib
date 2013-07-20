@@ -14,8 +14,8 @@ handle(Req, State) ->
     Qid = binary_to_list(BinaryQid),
     error_logger:info_report(io_lib:format("Qid: ~p", [Qid])),
     Filename = io_lib:format("attachment; filename=~p.csv", [Qid]),
-    #history{results = Results} = history:get_history(Qid),
-    ResultAsText = re:replace(string:join(Results, "\n"), "\t", ",", [global, {return, list}]),
+    #query_result{result = Result} = history:get_result(Qid),
+    ResultAsText = re:replace(string:join(Result, "\n"), "\t", ",", [global, {return, list}]),
     {ok, Req3} = cowboy_req:reply(200, [{<<"Content-Type">>, <<"text/csv">>}, {<<"Content-Disposition">>, list_to_binary(Filename)}], ResultAsText, Req2),
     {ok, Req3, State}.
 

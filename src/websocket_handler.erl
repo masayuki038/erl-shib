@@ -56,17 +56,24 @@ execute_query(Hql) ->
     Qid = hive_query:generate_id(Hql, erlang:localtime()),
     error_logger:info_report(io_lib:format("generated id: ~p", [Qid])),
     History = create_history(Qid, Hql),
-    history:update_history(History),
+    {atomic, ok} = history:update_history(History),
     {ok, ResultAsBinary} = fetch_all(Hql),
+    Fetched = History#history{status = fetched},
+    {atomic, ok} = history:update_history(Fetched),
     error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
     Results = lists:map(fun(N) -> binary_to_list(N) end, ResultAsBinary),
-    error_logger:info_report(io_lib:format("Results size: : ~p", [length(Results)])),
-    Updated = History#history{results = Results, end_at = erlang:localtime()},
-    history:update_history(Updated),
-    {ok, Updated}.
+    %error_logger:info_report(io_lib:format("Results size: : ~p", [length(Results)])),
+    Result = create_result(Qid, Results),
+    {atomic, ok} = history:update_result(Result),
+    Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},
+    {atomic, ok} = history:update_history(Executed),
+    {ok, History}.
 
 create_history(Qid, Hql) ->
-    #history{query_id = Qid, hql = Hql, status = prepare, start_at = erlang:localtime()}.
+    history:create_history(Qid, Hql, executing, iso8601:format(erlang:localtime()), undefined).
+
+create_result(Qid, Results) ->
+    history:create_result(Qid, Results).
 
 fetch_all(Hql) ->
     {ok, C0} = get_connection(),

@@ -33,9 +33,7 @@ get_history_test() ->
     history:start(),
     H = create_history1(),
     history:update_history(H),
-    Histories = history:get_history("Test1"),
-    ?assertEqual(1, length(Histories)),
-    L = lists:last(Histories),
+    L = history:get_history("Test1"),
     ?assertEqual(H, L).
 
 update_test() ->
@@ -46,15 +44,32 @@ update_test() ->
     H2 = H#history{hql = "select * from tests2"},
     ?debugVal(H2),
     history:update_history(H2),
-    Histories = history:get_history("Test1"),
-    ?assertEqual(1, length(Histories)),
-    L = lists:last(Histories),
+    L = history:get_history("Test1"),
     #history{hql = Hql} = L,
     ?assertEqual("select * from tests2", Hql).
 
+histories_to_json_test() ->
+    history:do_this_once(),
+    history:start(),
+    H1 = create_history1(),
+    H2 = create_history2(),
+    history:update_history(H1),
+    history:update_history(H2),
+    Histories = history:get_histories(),
+    ?debugVal(Histories),
+    Structured = lists:map(fun(History) -> ?record_to_struct(history, History) end, Histories),
+    ?debugVal(Structured),
+    Json = jiffy:encode(Structured),   
+    error_logger:info_report(Json).
+    
 create_history1() ->
-    history:create_history("Test1", "select * from tests", 1, {{2013, 6, 29}, {19, 38, 22}}, {{2013, 6, 29}, {19, 39, 41}}).
+    history:create_history("Test1", "select * from tests", 1, iso8601:format({{2013, 6, 29}, {19, 38, 22}}), iso8601:format({{2013, 6, 29}, {19, 39, 41}})).
+
+%create_history1() ->
+%    history:create_history("Test1", "select * from tests", 1, undefined, undefined).
     
 create_history2() ->
-    history:create_history("Test2", "select * from tests", 1, {{2013, 6, 29}, {19, 38, 21}}, {{2013, 6, 29}, {19, 39, 42}}).
+    history:create_history("Test2", "select * from tests", 1, iso8601:format({{2013, 6, 29}, {19, 38, 21}}), iso8601:format({{2013, 6, 29}, {19, 39, 42}})).
     
+%create_history2() ->
+%    history:create_history("Test2", "select * from tests", 1, undefined, undefined).

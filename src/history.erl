@@ -10,6 +10,7 @@ do_this_once() ->
     mnesia:create_schema([node()]),
     mnesia:start(),   
     mnesia:create_table(history, [{attributes, record_info(fields, history)}]),
+    mnesia:create_table(query_result, [{attributes, record_info(fields, query_result)}]),
     mnesia:stop().
 
 start() ->
@@ -34,8 +35,20 @@ get_histories() ->
 get_history(Qid) ->
     F = fun() -> mnesia:read({history, Qid}) end,
     {atomic, Val} = mnesia:transaction(F),
-    [H|L] = Val,
-    H.	    	
+    [H|_] = Val,
+    H.
+
+create_result(Query_id, Result) ->
+    #query_result{query_id = Query_id, result = Result}.
+
+update_result(R) ->	    	
+    mnesia:transaction(fun() -> mnesia:write(R) end).
+
+get_result(Qid) ->
+    F = fun() -> mnesia:read({query_result, Qid}) end,
+    {atomic, Val} = mnesia:transaction(F),
+    [H|_] = Val,
+    H.
 
 do(Q) ->
     F = fun() -> qlc:e(Q) end,
