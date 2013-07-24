@@ -7,15 +7,31 @@
 -include_lib("stdlib/include/qlc.hrl").
 
 do_this_once() ->
-    mnesia:create_schema([node()]),
-    mnesia:start(),   
-    mnesia:create_table(history, [{attributes, record_info(fields, history)}]),
-    mnesia:create_table(query_result, [{attributes, record_info(fields, query_result)}]),
-    mnesia:stop().
+     ok.
 
 start() ->
-    mnesia:start(),
-    mnesia:wait_for_tables([history], 20000).
+    Node = node(),
+    case mnesia:create_schema([Node]) of
+        ok -> prepare_db(true, Node);
+        {error, {Node, {already_exists, Node}}} ->
+            prepare_db(false, Node);
+        _ -> error
+    end.
+
+prepare_db(First, Node) ->
+    ok = mnesia:start(),
+    case First of
+        true -> 
+	    ok = create_tables(Node);
+        _ -> ok
+    end,
+    mnesia:wait_for_tables([history, query_result], 20000).
+
+create_tables(Node) ->
+    mnesia:create_table(history, [{attributes, record_info(fields, history)}, {disc_copies, [Node]}]),
+    mnesia:create_table(query_result, [{attributes, record_info(fields, query_result)}, {disc_copies, [Node]}]),
+    ok.
+    
 
 create_history(Query_id, Hql, Status, Start_at, End_at) ->
     #history{query_id = Query_id, hql = Hql, status = Status, start_at = Start_at, end_at = End_at}.
