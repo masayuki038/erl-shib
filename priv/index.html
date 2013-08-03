@@ -33,49 +33,89 @@
       <div>
 	<div class="row">
           <form>
-            <div>
-              <textarea class="input-xxlarge" id="hql" rows="10"></textarea>
+            <div class="history_container">
+              <div id="history_list">
+              </div>            
             </div>
             <div>
-              <a class="btn" href="#">new query</a>
-              <a class="btn" id="execute" href="#">execute</a>
+              <textarea class="input-xxlarge new_query" id="hql" rows="10"></textarea>
             </div>
-            <div id="result_panel">
-              <a class="btn" href="#">delete</a>
-              <a class="btn" href="#">show full</a>
-              <a class="btn" href="#">show head</a>
-              <a class="btn" id="tsv" href="#">tsv</a>
-              <a class="btn" id="csv" href="#">csv</a>
+            <div class="well editbox">
+              <div>
+		<a class="btn" id="new_query" href="#">new query</a>
+		<a class="btn" id="copy_to_new_query" href="#">copy_to_new_query</a>
+		<a class="btn" id="execute" href="#">execute</a>
+              </div>
+              <div id="result_panel">
+		<div>
+                  <a class="btn" href="#">delete</a>
+                  <a class="btn" href="#">show full</a>
+                  <a class="btn" href="#">show head</a>
+                  <a class="btn" id="tsv" href="#">tsv</a>
+                  <a class="btn" id="csv" href="#">csv</a>
+		</div>
+		<div id="result_information">
+		</div>
+              </div>
             </div>
           </form>
 	</div>
       </div>
-      <div style="float: right;" id="histories">
-      </div>
-      <script type="text/x-handlebars-template" id="histories_template">
-        <ul class="history_list">
-          {{#each histories}}
-          <li>{{this.query_id}}</li>
-          {{/each}}
-        </ul>
-      </script>
-      <script type="text/javascript">
-        var source = $("#histories_template").html();
-        var template = Handlebars.compile(source);
-        $.ajax({
-          type: 'GET',
-          url: '/histories',
-          dataType: 'json',
-          success: function (data) {
-            var content = {
-              histories: data
-            };
-            $("#histories").html(template(content));
-          },
-        });
-      </script>
     </header>
   </div>
+  <script type="text/x-handlebars-template" id="histories_template">
+    <ul class="nav nav-list">
+      <li class="nav-header">history</li>
+      {{#each histories}}
+      <li><a href="javascript:selected_history('{{this.query_id}}')">
+          <div id="query-history-{{this.query_id}}" class="query_item">
+            <div class="query_time">
+              {{this.start_at}}
+            </div>
+            <div class="query_statement">
+              {{this.hql}}
+            </div>
+            <div class="query_information">
+              <span class="status">{{this.status}}</span>
+              <span class="etc">{{this.end_at}}</span>
+            </div>
+        </div></a>
+      </li>
+      <li class="divider"></li>
+      {{/each}}
+    </ul>
+  </script>
+  <script type="text/x-handlebars-template" id="result_information_template">
+    <div>
+      <span>Query Status:</span><span>{{history.status}}</span>
+    </div>
+    <div>
+      <span>Start at: </span><span>{{history.start_at}}</span>
+    </div>
+    <div>
+      <span>End at: </span><span>{{history.end_at}}</span>
+    </div>
+  </script>
+  <script type="text/javascript">
+    var source = $("#histories_template").html();
+    var template = Handlebars.compile(source);
+    $.ajax({
+      type: 'GET',
+      url: '/histories',
+      dataType: 'json',
+      success: function (data) {
+        var content = {
+          histories: data
+        };
+        history_map = {};
+        for(var i = 0; i < data.length; i++) {
+          var history = data[i];
+          history_map[history["query_id"]] = history;
+        }
+        $("#history_list").html(template(content));
+      },
+    });
+  </script>
   <script type="text/javascript">
     var qid = null;
     var server = new FancyWebSocket('ws://$host$:$port$/websocket');
@@ -84,9 +124,7 @@
     });
     server.bind('query_success', function(query) {
         alert(query.id + " has done");
-        qid = query.id;
-        // set visible to result_panel
-        $("#result_panel").show();
+        set_query_result(query.id, query.hql);
     });
     $("#execute").click(function() {
       //alert($("#hql").val());
@@ -95,9 +133,61 @@
     });
     $("#csv").click(function() {
       location.href="/download/csv/" + qid;
+      return false;
     });
     $("#tsv").click(function() {
       location.href="/download/tsv/" + qid;
+      return false;
+    });
+    $("#new_query").click(function() {
+      new_query();
+      return false;
+    });    
+    $("#copy_to_new_query").click(function() {
+      var hql = $("#hql").val();
+      new_query();
+      $("#hql").val(hql);
+      return false;
+    });    
+    selected_history = function(query_id) {
+      var history = history_map[query_id];
+      if(!history) {
+        return;
+      }
+      set_query_result(query_id, history.hql);
+    }
+    set_query_result = function(query_id, hql) {
+      qid = query_id;
+      // set visible to result_panel
+      var source = $("#result_information_template").html();
+      var template = Handlebars.compile(source);
+      var content = {
+        history: history_map[query_id]
+      };
+      $("#result_information").html(template(content));
+      
+      $("#result_panel").show();
+      $("#copy_to_new_query").show();
+      $("#execute").hide();
+      $("#hql").val(hql);
+      $("#hql").attr("readonly", "");
+      $("#hql").removeClass("new_query");
+      $("#hql").addClass("result");
+    }
+    new_query = function() {
+      qid = null;
+      $("#result_panel").hide();
+      $("#copy_to_new_query").hide();
+      $("#execute").show();
+      $("#hql").removeAttr("readonly");
+      $("#hql").removeClass("result");      
+      $("#hql").addClass("new_query");      
+      $("#hql").val("");
+    }
+  </script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#copy_to_new_query").hide();
     });
   </script>
 </body>
