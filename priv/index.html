@@ -97,24 +97,29 @@
     </div>
   </script>
   <script type="text/javascript">
-    var source = $("#histories_template").html();
-    var template = Handlebars.compile(source);
-    $.ajax({
-      type: 'GET',
-      url: '/histories',
-      dataType: 'json',
-      success: function (data) {
-        var content = {
-          histories: data
-        };
-        history_map = {};
-        for(var i = 0; i < data.length; i++) {
-          var history = data[i];
-          history_map[history["query_id"]] = history;
-        }
-        $("#history_list").html(template(content));
-      },
-    });
+    update_histories = function(callback) {
+      var source = $("#histories_template").html();
+      var template = Handlebars.compile(source);
+      $.ajax({
+        type: 'GET',
+        url: '/histories',
+        dataType: 'json',
+        success: function (data) {
+          var content = {
+            histories: data
+          };
+          history_map = {};
+          for(var i = 0; i < data.length; i++) {
+            var history = data[i];
+            history_map[history["query_id"]] = history;
+          }
+          $("#history_list").html(template(content));
+          if(callback) {
+            callback();
+          }
+        },
+      });
+    }
   </script>
   <script type="text/javascript">
     var qid = null;
@@ -124,11 +129,16 @@
     });
     server.bind('query_success', function(query) {
         alert(query.id + " has done");
-        set_query_result(query.id, query.hql);
+        update_histories(function() {
+          set_query_result(query.id);
+        });
     });
     $("#execute").click(function() {
       //alert($("#hql").val());
       server.send('query_start', $('#hql').val());
+      setTimeout(function() {
+        update_histories();
+      }, 2000);
       return false;
     });
     $("#csv").click(function() {
@@ -150,14 +160,15 @@
       return false;
     });    
     selected_history = function(query_id) {
+      set_query_result(query_id);
+    }
+    set_query_result = function(query_id) {
       var history = history_map[query_id];
       if(!history) {
         return;
       }
-      set_query_result(query_id, history.hql);
-    }
-    set_query_result = function(query_id, hql) {
       qid = query_id;
+      var hql = history.hql
       // set visible to result_panel
       var source = $("#result_information_template").html();
       var template = Handlebars.compile(source);
@@ -188,6 +199,7 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $("#copy_to_new_query").hide();
+      update_histories();
     });
   </script>
 </body>

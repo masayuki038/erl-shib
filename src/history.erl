@@ -42,9 +42,9 @@ update_history(H) ->
 get_histories() ->
     do(qlc:sort(qlc:q([X || X <- mnesia:table(history)]),[{order,  
         fun(H1, H2) ->
-            #history{end_at = End1} = H1,
-            #history{end_at = End2} = H2,
-            End1 > End2
+            #history{start_at = Start1} = H1,
+            #history{start_at = Start2} = H2,
+            Start1 > Start2
         end}])
     ).
 
