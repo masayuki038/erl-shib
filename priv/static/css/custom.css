@@ -36,3 +36,20 @@ textarea.result {
   width: 512px;
   padding: 5px;
 }
+
+.modal-body {
+  //height: 350px;
+  width: auto;
+}
+
+#show_full_panel {
+  background-color: #ffffff;
+  height: 350px;
+  color: #000000;
+  font-size: 0.8em;
+  line-height: 1.0em;
+  overflow: scroll;
+  word-break: normal;
+  word-wrap: normal;
+  white-space: pre;
+}
