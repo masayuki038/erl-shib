@@ -32,6 +32,8 @@
     <header class="jumbotron subhead" id="overview">
       <div>
 	<div class="row">
+          <div id="cluster_status">
+          </div>
           <form>
             <div class="history_container">
               <div id="history_list">
@@ -111,6 +113,11 @@
       <span>End at: </span><span>{{history.end_at}}</span>
     </div>
   </script>
+  <script type="text/x-handlebars-template" id="cluster_status_template">
+    <span class="cluster_status_title">task_trackers:</span><span class="badge cluster_status_value">{{cluster_status.task_trackers}}</span>
+    <span class="cluster_status_title">map_tasks:</span><span class="badge cluster_status_value">{{cluster_status.map_tasks}}</span>
+    <span class="cluster_status_title">reduce_tasks:</span><span class="badge cluster_status_value">{{cluster_status.reduce_tasks}}</span>
+  </script>
   <script type="text/javascript">
     update_histories = function(callback) {
       var source = $("#histories_template").html();
@@ -135,6 +142,22 @@
         },
       });
     }
+
+    update_cluster_status = function() {
+      var source = $("#cluster_status_template").html();
+      var template = Handlebars.compile(source);
+      $.ajax({
+        type: 'GET',
+        url: '/cluster/status',
+        dataType: 'json',
+        success: function(data) {
+          var content = {
+            cluster_status: data
+          };
+          $("#cluster_status").html(template(content));
+        },
+      });
+    };
   </script>
   <script type="text/javascript">
     var qid = null;
@@ -235,6 +258,8 @@
     $(document).ready(function() {
       $("#copy_to_new_query").hide();
       update_histories();
+      update_cluster_status();
+      setInterval(update_cluster_status, 5000);
     });
   </script>
 </body>

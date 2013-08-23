@@ -53,3 +53,12 @@ textarea.result {
   word-wrap: normal;
   white-space: pre;
 }
+
+.cluster_status_title {
+  
+}
+
+.cluster_status_value {
+  margin-right: 20px;
+  margin-left: 3px;
+}

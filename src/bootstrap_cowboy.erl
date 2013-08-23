@@ -17,6 +17,7 @@ start() ->
             {"/", toppage_handler, []},
             {"/websocket", websocket_handler, []},
             {"/histories", history_handler, []},
+            {"/cluster/status", cluster_status_handler, []},
             {"/result/full/:qid", result_full_handler, []},
             {"/result/head/:qid", result_head_handler, []},
             {"/download/csv/:qid", csv_download_handler, []},

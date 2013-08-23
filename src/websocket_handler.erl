@@ -11,6 +11,7 @@
 
 init({tcp, http}, _Req, _Opts) ->
     error_logger:info_report("init/3"),
+    %%ets:new(hive_conn, [set, named_table, public]),
     {upgrade, protocol, cowboy_websocket}.
 
 websocket_init(_TransportName, Req, _Opts) -> 
@@ -57,7 +58,7 @@ execute_query(Hql) ->
     error_logger:info_report(io_lib:format("generated id: ~p", [Qid])),
     History = create_history(Qid, Hql),
     {atomic, ok} = history:update_history(History),
-    {ok, ResultAsBinary} = fetch_all(Hql),
+    {ok, ResultAsBinary} = fetch_all(Qid, Hql),
     Fetched = History#history{status = fetched},
     {atomic, ok} = history:update_history(Fetched),
     error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
@@ -75,17 +76,11 @@ create_history(Qid, Hql) ->
 create_result(Qid, Results) ->
     history:create_result(Qid, Results).
 
-fetch_all(Hql) ->
-    {ok, C0} = get_connection(),
+fetch_all(Qid, Hql) ->
+    {ok, C0} = hive:get_connection(),
+    %%true = ets:insert(hive_conn, {Qid, C0}),
     {C1, {ok, _}} = thrift_client:call(C0, execute, [Hql]),
+    error_logger:info_report("execute called"),
     {_, {ok, R2}} = thrift_client:call(C1, fetchAll, []),
-    %Ret = lists:map(fun(N) -> binary_to_list(N) end, R2),
+    error_logger:info_report("fetchAll called"),
     {ok, R2}.
-
-get_connection() ->
-    Host = econfig:get_value(erl_shib, "hive", "host"),
-    Port = econfig:get_value(erl_shib, "hive", "port"),
-    error_logger:info_report(io:format("Host: ~p~n", [Host])),
-    error_logger:info_report(io:format("Port: ~p~n", [Port])),
-    thrift_client_util:new(Host, list_to_integer(Port), thriftHive_thrift, []).
-
