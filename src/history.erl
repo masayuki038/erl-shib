@@ -36,9 +36,6 @@ create_tables(Node) ->
 create_history(Query_id, Hql, Status, Start_at, End_at) ->
     #history{query_id = Query_id, hql = Hql, status = Status, start_at = Start_at, end_at = End_at}.
 
-update_history(H) ->
-    mnesia:transaction(fun() -> mnesia:write(H) end).
-
 get_histories() ->
     do(qlc:sort(qlc:q([X || X <- mnesia:table(history)]),[{order,  
         fun(H1, H2) ->
@@ -54,17 +51,26 @@ get_history(Qid) ->
     [H|_] = Val,
     H.
 
+update_history(H) ->
+    mnesia:transaction(fun() -> mnesia:write(H) end).
+
+delete_history(Qid) ->
+    mnesia:transaction(fun() -> mnesia:delete({history, Qid}) end).
+
 create_result(Query_id, Result) ->
     #query_result{query_id = Query_id, result = Result}.
-
-update_result(R) ->	    	
-    mnesia:transaction(fun() -> mnesia:write(R) end).
 
 get_result(Qid) ->
     F = fun() -> mnesia:read({query_result, Qid}) end,
     {atomic, Val} = mnesia:transaction(F),
     [H|_] = Val,
     H.
+
+update_result(R) ->	    	
+    mnesia:transaction(fun() -> mnesia:write(R) end).
+
+delete_result(Qid) ->	    	
+    mnesia:transaction(fun() -> mnesia:delete({query_result, Qid}) end).
 
 do(Q) ->
     F = fun() -> qlc:e(Q) end,

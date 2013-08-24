@@ -50,7 +50,7 @@
               </div>
               <div id="result_panel">
 		<div>
-                  <a class="btn" href="#">delete</a>
+                  <a class="btn" id="delete" href="#">delete</a>
                   <a href="#result_dialog" role="button" class="btn" id="show_full" data-toggle="modal">show full</a>
                   <a href="#result_dialog" role="button" class="btn" id="show_head" data-toggle="modal">show head</a>
                   <a class="btn" id="tsv" href="#">tsv</a>
@@ -217,6 +217,16 @@
       $("#hql").val(hql);
       return false;
     });    
+    $("#delete").click(function() {
+      $.ajax({
+        type: 'DELETE',
+        url: '/history/delete/' + qid,
+        dataType: 'text',
+        success: function (data) {
+          update_histories(new_query);
+        },
+      });
+    });
     selected_history = function(query_id) {
       set_query_result(query_id);
     }
