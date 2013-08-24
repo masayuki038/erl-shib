@@ -94,7 +94,7 @@
               {{this.hql}}
             </div>
             <div class="query_information">
-              <span class="status">{{this.status}}</span>
+              <span class="{{#status-label this.status}}{{/status-label}} status">{{this.status}}</span>
               <span class="etc">{{this.end_at}}</span>
             </div>
         </div></a>
@@ -105,7 +105,7 @@
   </script>
   <script type="text/x-handlebars-template" id="result_information_template">
     <div>
-      <span>Query Status:</span><span>{{history.status}}</span>
+      <span>Query Status:</span><span class="{{#status-label history.status}}{{/status-label}}">{{history.status}}</span>
     </div>
     <div>
       <span>Start at: </span><span>{{history.start_at}}</span>
@@ -272,25 +272,23 @@
       $("#result_information").html(template(content));
       
       // set visible to result_panel
-      $("#result_panel").show();
       $("#hql").val(hql);
       $("#hql").attr("readonly", "");
       $("#hql").removeClass("new_query");
       $("#hql").addClass("result");
       $("#copy_to_new_query").show();
       $("#execute").hide();
-      if(status == "executed") {
+      $("#delete").show();
+      if(status == "executed") { 
+        $("#result_panel").show();
         $("#cancel").hide();
         $("#tsv").show();
         $("#csv").show();
         $("#show_full").show();
         $("#show_head").show();
-      } else {
-        if(status == "canceled") {
-          $("#cancel").hide();
-        } else {
-          $("#cancel").show();
-        }
+      } else if(status == "canceled") {
+        $("#result_panel").show();
+        $("#cancel").hide();
         $("#tsv").hide();
         $("#csv").hide();
         $("#show_full").hide();
@@ -325,6 +323,14 @@
   </script>
   <script type="text/javascript">
     $(document).ready(function() {
+      Handlebars.registerHelper('status-label', function(status, option) {
+        if(status == "executed") {
+          return "label label-success";
+        } else if (status == "canceled") {
+          return "label label-important";
+        } 
+        return "label label-primary";
+      });
       $("#copy_to_new_query").hide();
       $("#cancel").hide();
       update_histories();
