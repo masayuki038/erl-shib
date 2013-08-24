@@ -37,13 +37,17 @@ create_history(Query_id, Hql, Status, Start_at, End_at) ->
     #history{query_id = Query_id, hql = Hql, status = Status, start_at = Start_at, end_at = End_at}.
 
 get_histories() ->
-    do(qlc:sort(qlc:q([X || X <- mnesia:table(history)], [{max_lookup, 20}]),[{order,  
+    take(20, do(qlc:sort(qlc:q([X || X <- mnesia:table(history)]),[{order,  
         fun(H1, H2) ->
             #history{start_at = Start1} = H1,
             #history{start_at = Start2} = H2,
             Start1 > Start2
         end}])
-    ).
+    )).
+
+take(0, _) -> [];
+take(_, []) -> [];
+take(N, [X | Xs]) when N > 0 -> [X | take(N-1, Xs)].
 
 get_history(Qid) ->
     F = fun() -> mnesia:read({history, Qid}) end,
