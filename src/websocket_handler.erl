@@ -11,25 +11,28 @@
 
 init({tcp, http}, _Req, _Opts) ->
     error_logger:info_report("init/3"),
-    %%ets:new(hive_conn, [set, named_table, public]),
     {upgrade, protocol, cowboy_websocket}.
 
 websocket_init(_TransportName, Req, _Opts) -> 
     error_logger:info_report("websocket_init/3"),
-    %%erlang:start_timer(1000, self(), <<"Hello!">>),
     {ok, Req, undefined_state}.
  
 websocket_handle({text, Msg}, Req, State) ->
     error_logger:info_report("websocket_handle/3a"),
     error_logger:info_report(Msg),
     case jiffy:decode(Msg) of
-        {[{<<"event">>, <<"query_start">>}, {<<"data">>, Hql}]} ->
-            {ok, Updated} = execute_query(Hql),
+        {[{<<"event">>, <<"send_query">>}, {<<"data">>, Hql}]} ->
+            {ok, Updated} = create_query(Hql),
+            erlang:start_timer(1000, self(), Updated),
             #history{query_id = Qid} = Updated,
             error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
-            {reply, 
-             {text, jiffy:encode({[{event, query_success}, {data, {[{id, list_to_atom(Qid)}]}}]})}, 
-             Req, State
+            {
+                reply, 
+                {
+                    text, 
+                    jiffy:encode({[{event, query_start}, {data, {[{id, list_to_atom(Qid)}]}}]})
+                }, 
+                Req, State
             };
         _ ->
             {reply, 
@@ -41,10 +44,32 @@ websocket_handle(_Data, Req, State) ->
     error_logger:info_report("websocket_handle/3b"),
     {ok, Req, State}.
  
-websocket_info({timeout, _Ref, Msg}, Req, State) ->
+websocket_info({timeout, _Ref, History}, Req, State) ->
     error_logger:info_report("websocket_info/3a"),
-    %%erlang:start_timer(1000, self(), <<"How' you doin'?">>),
-    {reply, {text, Msg}, Req, State};
+    case execute_query(History) of
+        {ok, Updated} ->
+            #history{query_id = Qid} = Updated,
+            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
+            {
+                reply, 
+                {
+                    text, 
+                    jiffy:encode({[{event, query_success}, {data, {[{id, list_to_atom(Qid)}]}}]})
+                }, 
+                Req, State
+            };
+        {canceled, Updated} ->
+            #history{query_id = Qid} = Updated,
+            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
+            {
+                reply, 
+                {
+                    text, 
+                    jiffy:encode({[{event, query_cancel}, {data, {[{id, list_to_atom(Qid)}]}}]})
+                }, 
+                Req, State
+            }
+    end;           
 websocket_info(_Info, Req, State) ->
     error_logger:info_report("websocket_info/3b"),
     {ok, Req, State}.
@@ -53,22 +78,32 @@ websocket_terminate(_Reason, _Req, _State) ->
     error_logger:info_report("websocket_terminate/3"),
     ok.
 
-execute_query(Hql) ->
+create_query(Hql) ->
     Qid = hive_query:generate_id(Hql, erlang:localtime()),
     error_logger:info_report(io_lib:format("generated id: ~p", [Qid])),
     History = create_history(Qid, Hql),
     {atomic, ok} = history:update_history(History),
-    {ok, ResultAsBinary} = fetch_all(Qid, Hql),
-    Fetched = History#history{status = fetched},
-    {atomic, ok} = history:update_history(Fetched),
-    error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
-    Results = lists:map(fun(N) -> binary_to_list(N) end, ResultAsBinary),
-    %error_logger:info_report(io_lib:format("Results size: : ~p", [length(Results)])),
-    Result = create_result(Qid, Results),
-    {atomic, ok} = history:update_result(Result),
-    Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},
-    {atomic, ok} = history:update_history(Executed),
     {ok, History}.
+
+execute_query(History) ->
+    #history{query_id = Qid, hql = Hql} = History,
+    {ok, ResultAsBinary} = fetch_all(Qid, Hql),
+    LatestHistory = history:get_history(Qid),
+    #history{status = LatestStatus} = LatestHistory,
+    case LatestStatus of 
+      executing -> 
+        Fetched = History#history{status = fetched},
+        {atomic, ok} = history:update_history(Fetched),
+        error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
+        Results = lists:map(fun(N) -> binary_to_list(N) end, ResultAsBinary),
+        Result = create_result(Qid, Results),
+        {atomic, ok} = history:update_result(Result),
+        Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},
+        {atomic, ok} = history:update_history(Executed),
+	{ok, History};
+      canceled ->
+        {canceled, History}
+    end.
 
 create_history(Qid, Hql) ->
     history:create_history(Qid, Hql, executing, iso8601:format(erlang:localtime()), undefined).

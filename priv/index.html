@@ -47,6 +47,7 @@
 		<a class="btn" id="new_query" href="#">new query</a>
 		<a class="btn" id="copy_to_new_query" href="#">copy_to_new_query</a>
 		<a class="btn" id="execute" href="#">execute</a>
+		<a class="btn" id="cancel" href="#">cancel</a>
               </div>
               <div id="result_panel">
 		<div>
@@ -169,15 +170,23 @@
     server.bind('open', function() {
        // alert("FancyWebSocket#open");
     });
+    server.bind('query_start', function(query) {
+      update_histories(function() {
+        set_query_started(query.id);
+      });
+    });
     server.bind('query_success', function(query) {
-        alert(query.id + " has done");
-        update_histories(function() {
-          set_query_result(query.id);
-        });
+      alert(query.id + " has done");
+      update_histories(function() {
+        set_query_result(query.id);
+      });
+    });
+    server.bind('query_cancel', function(query) {
+      // do nothing.
     });
     $("#execute").click(function() {
       //alert($("#hql").val());
-      server.send('query_start', $('#hql').val());
+      server.send('send_query', $('#hql').val());
       setTimeout(function() {
         update_histories();
       }, 2000);
@@ -231,6 +240,18 @@
         },
       });
     });
+    $("#cancel").click(function() {
+      $.ajax({
+        type: 'PUT',
+        url: '/query/cancel/' + qid,
+        dataType: 'text',
+        success: function (data) {
+          update_histories(function() {
+            set_query_result(qid);
+          });
+        },
+      });
+    });
     selected_history = function(query_id) {
       set_query_result(query_id);
     }
@@ -241,7 +262,8 @@
       }
       qid = query_id;
       var hql = history.hql
-      // set visible to result_panel
+      var status = history.status
+
       var source = $("#result_information_template").html();
       var template = Handlebars.compile(source);
       var content = {
@@ -249,14 +271,47 @@
       };
       $("#result_information").html(template(content));
       
+      // set visible to result_panel
       $("#result_panel").show();
-      $("#copy_to_new_query").show();
-      $("#execute").hide();
       $("#hql").val(hql);
       $("#hql").attr("readonly", "");
       $("#hql").removeClass("new_query");
       $("#hql").addClass("result");
+      $("#copy_to_new_query").show();
+      $("#execute").hide();
+      if(status == "executed") {
+        $("#cancel").hide();
+        $("#tsv").show();
+        $("#csv").show();
+        $("#show_full").show();
+        $("#show_head").show();
+      } else {
+        if(status == "canceled") {
+          $("#cancel").hide();
+        } else {
+          $("#cancel").show();
+        }
+        $("#tsv").hide();
+        $("#csv").hide();
+        $("#show_full").hide();
+        $("#show_head").hide();        
+      }
     }
+    set_query_started = function(query_id) {
+      var history = history_map[query_id];
+      if(!history) {
+        return;
+      }
+      qid = query_id;
+      var hql = history.hql
+
+      $("#execute").hide();
+      $("#cancel").show();
+      $("#hql").val(hql);
+      $("#hql").attr("readonly", "");
+      $("#hql").removeClass("new_query");
+      $("#hql").addClass("result");
+    }     
     new_query = function() {
       qid = null;
       $("#result_panel").hide();
@@ -271,6 +326,7 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $("#copy_to_new_query").hide();
+      $("#cancel").hide();
       update_histories();
       update_cluster_status();
       status_check = setInterval(update_cluster_status, 5000);

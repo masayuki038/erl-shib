@@ -18,6 +18,7 @@ start() ->
             {"/websocket", websocket_handler, []},
             {"/histories", history_handler, []},
             {"/cluster/status", cluster_status_handler, []},
+            {"/query/cancel/:qid", query_cancel_handler, []},
             {"/history/delete/:qid", history_delete_handler, []},
             {"/result/full/:qid", result_full_handler, []},
             {"/result/head/:qid", result_head_handler, []},
