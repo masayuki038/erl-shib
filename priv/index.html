@@ -184,6 +184,12 @@
     server.bind('query_cancel', function(query) {
       // do nothing.
     });
+    server.bind('query_fail', function(query) {
+      alert(query.id + " has failed");
+      update_histories(function() {
+        set_query_result(query.id);
+      });      
+    });
     $("#execute").click(function() {
       //alert($("#hql").val());
       server.send('send_query', $('#hql').val());
@@ -286,13 +292,15 @@
         $("#csv").show();
         $("#show_full").show();
         $("#show_head").show();
-      } else if(status == "canceled") {
+      } else if(status == "canceled" || status == "error") {
         $("#result_panel").show();
         $("#cancel").hide();
         $("#tsv").hide();
         $("#csv").hide();
         $("#show_full").hide();
         $("#show_head").hide();        
+      } else {
+        $("#result_panel").hide();
       }
     }
     set_query_started = function(query_id) {
@@ -327,6 +335,8 @@
         if(status == "executed") {
           return "label label-success";
         } else if (status == "canceled") {
+          return "label label-info";
+        } else if (status == "error") {
           return "label label-important";
         } 
         return "label label-primary";

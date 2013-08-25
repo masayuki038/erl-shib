@@ -58,14 +58,25 @@ websocket_info({timeout, _Ref, History}, Req, State) ->
                 }, 
                 Req, State
             };
-        {canceled, Updated} ->
-            #history{query_id = Qid} = Updated,
+        {canceled, Canceled} ->
+            #history{query_id = Qid} = Canceled,
             error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
             {
                 reply, 
                 {
                     text, 
                     jiffy:encode({[{event, query_cancel}, {data, {[{id, list_to_atom(Qid)}]}}]})
+                }, 
+                Req, State
+            };
+	{failed, Failed} ->
+            #history{query_id = Qid} = Failed,
+            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
+            {
+                reply, 
+                {
+                    text, 
+                    jiffy:encode({[{event, query_fail}, {data, {[{id, list_to_atom(Qid)}]}}]})
                 }, 
                 Req, State
             }
@@ -87,22 +98,33 @@ create_query(Hql) ->
 
 execute_query(History) ->
     #history{query_id = Qid, hql = Hql} = History,
-    {ok, ResultAsBinary} = fetch_all(Qid, Hql),
-    LatestHistory = history:get_history(Qid),
-    #history{status = LatestStatus} = LatestHistory,
-    case LatestStatus of 
-      executing -> 
-        Fetched = History#history{status = fetched},
-        {atomic, ok} = history:update_history(Fetched),
-        error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
-        Results = lists:map(fun(N) -> binary_to_list(N) end, ResultAsBinary),
-        Result = create_result(Qid, Results),
-        {atomic, ok} = history:update_result(Result),
-        Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},
-        {atomic, ok} = history:update_history(Executed),
-	{ok, History};
-      canceled ->
-        {canceled, History}
+    try fetch_all(Qid, Hql) of
+        {ok, ResultAsBinary} ->
+            LatestHistory = history:get_history(Qid),
+            #history{status = LatestStatus} = LatestHistory,
+            case LatestStatus of 
+                executing -> 
+                    Fetched = History#history{status = fetched},
+                    {atomic, ok} = history:update_history(Fetched),
+                    error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
+                    Results = lists:map(fun(N) -> binary_to_list(N) end, ResultAsBinary),
+                    Result = create_result(Qid, Results),
+                    {atomic, ok} = history:update_result(Result),
+                    Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},
+                    {atomic, ok} = history:update_history(Executed),
+	            {ok, History};
+                canceled ->
+                    {canceled, History}
+            end
+    catch
+        _:_ ->
+            Report = ["failed to execute query",
+                      {method, fetch_all},
+                      {stacktrace, erlang:get_stacktrace()}],
+	    error_logger:error_report(Report),
+            Failed = History#history{status = error, end_at = iso8601:format(erlang:localtime())},
+            {atomic, ok} = history:update_history(Failed),
+	    {failed, Failed}
     end.
 
 create_history(Qid, Hql) ->
