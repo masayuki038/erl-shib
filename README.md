@@ -1,4 +1,6 @@
 erl-shib
 ========
 
-'erl-shib' is shib clone written by Erlang.
+'erl-shib' is (shib)[https://github.com/tagomoris/shib](client application) clone written by Erlang.
+
+
