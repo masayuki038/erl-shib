@@ -18,7 +18,8 @@ terminate(_Reason, _Req, _State) ->
 get_html() ->
     Host = econfig:get_value(erl_shib, "server", "host"),
     Port = econfig:get_value(erl_shib, "server", "port"),
+    Prefix = helper:get_request_prefix(),
     {ok, Cwd} = file:get_cwd(),
     Filename = filename:join([Cwd, "priv", "index.html"]),
     {ok, Compiled} = sgte:compile_file(Filename),
-    sgte:render(Compiled, [{host, Host}, {port, Port}]).
+    sgte:render(Compiled, [{host, Host}, {port, Port}, {prefix, Prefix}]).

@@ -12,7 +12,8 @@ start() ->
     true = econfig:subscribe(erl_shib),
     history:do_this_once(),
     history:start(),    
-    Prefix = econfig:get_value(erl_shib, "server", "prefix"),
+
+    Prefix = helper:get_request_prefix(),
     Dispatch = cowboy_router:compile([
         {'_', [
             {Prefix ++ "/", toppage_handler, []},

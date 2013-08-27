@@ -1,11 +1,11 @@
 <html>
 <head>
- <link href='/static/css/slate/bootstrap.css' rel='stylesheet'>
-  <link href='/static/css/custom.css' rel='stylesheet'>
+ <link href='$prefix$/static/css/slate/bootstrap.css' rel='stylesheet'>
+  <link href='$prefix$/static/css/custom.css' rel='stylesheet'>
   <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'></script>
-  <script type="text/javascript" src='/static/js/handlebars.js'></script>
-  <script type="text/javascript" src='/static/js/bootstrap.js'></script>
-  <script type="text/javascript" src='/static/js/ws_events_dispatcher.js'></script>
+  <script type="text/javascript" src='$prefix$/static/js/handlebars.js'></script>
+  <script type="text/javascript" src='$prefix$/static/js/bootstrap.js'></script>
+  <script type="text/javascript" src='$prefix$/static/js/ws_events_dispatcher.js'></script>
 </head>
 <body>
 
@@ -199,11 +199,11 @@
       return false;
     });
     $("#csv").click(function() {
-      location.href="/download/csv/" + qid;
+      location.href="$prefix$/download/csv/" + qid;
       return false;
     });
     $("#tsv").click(function() {
-      location.href="/download/tsv/" + qid;
+      location.href="$prefix$/download/tsv/" + qid;
       return false;
     });
     $("#show_full").click(function() {
