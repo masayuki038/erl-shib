@@ -125,7 +125,7 @@
       var template = Handlebars.compile(source);
       $.ajax({
         type: 'GET',
-        url: '/histories',
+        url: '$prefix$/histories',
         dataType: 'json',
         success: function (data) {
           var content = {
@@ -149,7 +149,7 @@
       var template = Handlebars.compile(source);
       $.ajax({
         type: 'GET',
-        url: '/cluster/status',
+        url: '$prefix$/cluster/status',
         dataType: 'json',
         success: function(data) {
           var content = {
@@ -166,7 +166,7 @@
   <script type="text/javascript">
     var qid = null;
     var status_check = null;
-    var server = new FancyWebSocket('ws://$host$:$port$/websocket');
+    var server = new FancyWebSocket('ws://$host$:$port$$prefix$/websocket');
     server.bind('open', function() {
        // alert("FancyWebSocket#open");
     });
@@ -209,7 +209,7 @@
     $("#show_full").click(function() {
       $.ajax({
         type: 'GET',
-        url: '/result/full/' + qid,
+        url: '$prefix$/result/full/' + qid,
         dataType: 'text',
         success: function (data) {
           $("#show_full_panel").html(data);
@@ -219,7 +219,7 @@
     $("#show_head").click(function() {
       $.ajax({
         type: 'GET',
-        url: '/result/head/' + qid,
+        url: '$prefix$/result/head/' + qid,
         dataType: 'text',
         success: function (data) {
           $("#show_full_panel").html(data);

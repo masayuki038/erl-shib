@@ -12,19 +12,20 @@ start() ->
     true = econfig:subscribe(erl_shib),
     history:do_this_once(),
     history:start(),    
+    Prefix = econfig:get_value(erl_shib, "server", "prefix"),
     Dispatch = cowboy_router:compile([
         {'_', [
-            {"/", toppage_handler, []},
-            {"/websocket", websocket_handler, []},
-            {"/histories", history_handler, []},
-            {"/cluster/status", cluster_status_handler, []},
-            {"/query/cancel/:qid", query_cancel_handler, []},
-            {"/history/delete/:qid", history_delete_handler, []},
-            {"/result/full/:qid", result_full_handler, []},
-            {"/result/head/:qid", result_head_handler, []},
-            {"/download/csv/:qid", csv_download_handler, []},
-            {"/download/tsv/:qid", tsv_download_handler, []},
-            {"/static/[...]", cowboy_static, [
+            {Prefix ++ "/", toppage_handler, []},
+            {Prefix ++ "/websocket", websocket_handler, []},
+            {Prefix ++ "/histories", history_handler, []},
+            {Prefix ++ "/cluster/status", cluster_status_handler, []},
+            {Prefix ++ "/query/cancel/:qid", query_cancel_handler, []},
+            {Prefix ++ "/history/delete/:qid", history_delete_handler, []},
+            {Prefix ++ "/result/full/:qid", result_full_handler, []},
+            {Prefix ++ "/result/head/:qid", result_head_handler, []},
+            {Prefix ++ "/download/csv/:qid", csv_download_handler, []},
+            {Prefix ++ "/download/tsv/:qid", tsv_download_handler, []},
+            {Prefix ++ "/static/[...]", cowboy_static, [
                 {directory, {priv_dir, erl_shib, [<<"static">>]}},
                 {mimetypes, {fun mimetypes:path_to_mimes/2,default}}
             ]}
