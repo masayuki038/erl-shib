@@ -48,5 +48,5 @@ start() ->
 stop(_Result) ->
     ok = application:stop(econfig),
     ok = application:stop(gproc),
-    0.
+    ok.
     

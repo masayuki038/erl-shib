@@ -18,6 +18,9 @@ start() ->
         _ -> error
     end.
 
+stop() ->
+    mnesia:stop().
+
 prepare_db(First, Node) ->
     ok = mnesia:start(),
     case First of

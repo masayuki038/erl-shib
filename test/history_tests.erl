@@ -2,6 +2,9 @@
 -include_lib("eunit/include/eunit.hrl").
 -include("history.hrl").
 
+-export([create_history1/0]).
+
+
 do_this_once_test() ->
     history:do_this_once().
 
@@ -63,13 +66,13 @@ histories_to_json_test() ->
     error_logger:info_report(Json).
     
 create_history1() ->
-    history:create_history("Test1", "select * from tests", 1, iso8601:format({{2013, 6, 29}, {19, 38, 22}}), iso8601:format({{2013, 6, 29}, {19, 39, 41}})).
+    history:create_history("Test1", "select * from test", 1, iso8601:format({{2013, 6, 29}, {19, 38, 22}}), iso8601:format({{2013, 6, 29}, {19, 39, 41}})).
 
 %create_history1() ->
 %    history:create_history("Test1", "select * from tests", 1, undefined, undefined).
     
 create_history2() ->
-    history:create_history("Test2", "select * from tests", 1, iso8601:format({{2013, 6, 29}, {19, 38, 21}}), iso8601:format({{2013, 6, 29}, {19, 39, 42}})).
+    history:create_history("Test2", "select * from test", 1, iso8601:format({{2013, 6, 29}, {19, 38, 21}}), iso8601:format({{2013, 6, 29}, {19, 39, 42}})).
     
 %create_history2() ->
 %    history:create_history("Test2", "select * from tests", 1, undefined, undefined).

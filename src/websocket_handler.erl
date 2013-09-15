@@ -6,6 +6,8 @@
 -export([websocket_handle/3]).
 -export([websocket_info/3]).
 -export([websocket_terminate/3]).
+-export([on_executed/2]).
+-export([execute_query/1]).
 
 -include("history.hrl").
 
@@ -98,21 +100,13 @@ create_query(Hql) ->
 
 execute_query(History) ->
     #history{query_id = Qid, hql = Hql} = History,
-    try fetch_all(Qid, Hql) of
-        {ok, ResultAsBinary} ->
+    try thrift_hive:fetch_all(Hql) of
+        {ok, Results} ->
             LatestHistory = history:get_history(Qid),
             #history{status = LatestStatus} = LatestHistory,
             case LatestStatus of 
-                executing -> 
-                    Fetched = History#history{status = fetched},
-                    {atomic, ok} = history:update_history(Fetched),
-                    error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(ResultAsBinary)])),
-                    Results = lists:map(fun(N) -> binary_to_list(N) end, ResultAsBinary),
-                    Result = create_result(Qid, Results),
-                    {atomic, ok} = history:update_result(Result),
-                    Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},
-                    {atomic, ok} = history:update_history(Executed),
-	            {ok, History};
+                executing ->
+                    on_executed(Results, History); 
                 canceled ->
                     {canceled, History}
             end
@@ -127,17 +121,19 @@ execute_query(History) ->
 	    {failed, Failed}
     end.
 
+on_executed(Results, History) ->
+    #history{query_id = Qid} = History,
+    Fetched = History#history{status = fetched},
+    {atomic, ok} = history:update_history(Fetched),
+    error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(Results)])),
+    Result = create_result(Qid, Results),
+    {atomic, ok} = history:update_result(Result),
+    Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},
+    {atomic, ok} = history:update_history(Executed),
+    {ok, Executed}.
+    
 create_history(Qid, Hql) ->
     history:create_history(Qid, Hql, executing, iso8601:format(erlang:localtime()), undefined).
 
 create_result(Qid, Results) ->
     history:create_result(Qid, Results).
-
-fetch_all(Qid, Hql) ->
-    {ok, C0} = hive:get_connection(),
-    %%true = ets:insert(hive_conn, {Qid, C0}),
-    {C1, {ok, _}} = thrift_client:call(C0, execute, [Hql]),
-    error_logger:info_report("execute called"),
-    {_, {ok, R2}} = thrift_client:call(C1, fetchAll, []),
-    error_logger:info_report("fetchAll called"),
-    {ok, R2}.
