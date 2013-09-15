@@ -1,19 +1,25 @@
 -module(thrift_hive_tests).
 -include_lib("eunit/include/eunit.hrl").
+-export([start/0]).
+-export([stop/1]).
 
 fetchOne_test_() ->
-    {timeout, 1200, 
-    ?_assertEqual(
-        {ok, "a\t 1"}, 
-        begin thrift_hive:fetch_one("select * from test") end
-    )}.
+    {timeout, 1200,
+     {setup, fun start/0, fun stop/1,
+      ?_assertEqual(
+         {ok, "a\t1"}, 
+         begin thrift_hive:fetch_one("select * from test") end
+        )}
+     }.
 
 fetchAll_test_() ->
     {timeout, 1200,
-    fun() ->
-        {ok, Lst} = thrift_hive:fetch_all("select * from test"),
-        ?assertEqual(["a\t 1", "b\t 2", "c\t 3", "d\t 1", "e\t 2", "f\t 3", "a\t 4", "b\t 5"], Lst)
-    end}.
+     {setup, fun start/0, fun stop/1,
+      fun() ->
+              {ok, Lst} = thrift_hive:fetch_all("select * from test"),
+              ?assertEqual(["a\t1", "b\t2", "c\t3", "d\t1", "e\t2", "f\t3", "a\t4", "b\t5"], Lst)
+      end}
+     }.
 
 %fetchGroupBy_test_() ->
 %    {timeout, 1200,
@@ -23,10 +29,24 @@ fetchAll_test_() ->
 %    end}.
 
 getClusterStatus_test_() -> 
-    {timeout, 1200, 
-    fun() ->
-            {ok, Lst} = thrift_hive:fetch_all_async("select c1, count(*) from test group by c1"),
-            ?debugVal(Lst),
-            {ok, Lst}
-    end}.
+    {timeout, 1200,
+     {setup, fun start/0, fun stop/1, 
+      fun() ->
+              {ok, Lst} = thrift_hive:fetch_all_async("select c1, count(*) from test group by c1"),
+              ?debugVal(Lst),
+              {ok, Lst}
+      end}
+    }.
+
+start() ->
+    ok = application:start(gproc),
+    ok = application:start(econfig),
+    ok = econfig:register_config(erl_shib, ["../erl_shib.ini"], [autoreload]),    
+    true = econfig:subscribe(erl_shib),
+    ok.
+
+stop(_Result) ->
+    ok = application:stop(econfig),
+    ok = application:stop(gproc),
+    0.
     

@@ -25,8 +25,8 @@ update_history2_test() ->
     Histories = history:get_histories(),
     ?assertEqual(2, length(Histories)),
     [F, L] = Histories,
-    ?assertEqual(H2, F),
-    ?assertEqual(H1, L).
+    ?assertEqual(H1, F),
+    ?assertEqual(H2, L).
 
 get_history_test() ->
     history:do_this_once(),
