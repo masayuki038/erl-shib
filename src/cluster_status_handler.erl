@@ -15,10 +15,10 @@ handle(Req, State) ->
     Result = lists:sublist(tuple_to_list(R1), 2, 6),
     Keys = [task_trackers, map_tasks, reduce_tasks, max_map_tasks, max_reduce_tasks, status],
     Zipped = {lists:zip(Keys, Result)},
-    error_logger:info_report(io_lib:format("Zipped: ~p", [Zipped])),    
+    lager:info(io_lib:format("Zipped: ~p", [Zipped])),    
     Json = jiffy:encode(Zipped),
-    error_logger:info_report(io_lib:format("getClusterStatus(R1): ~p", [R1])),
-    error_logger:info_report(io_lib:format("getClusterStatus(Result): ~p", [Json])),
+    lager:info(io_lib:format("getClusterStatus(R1): ~p", [R1])),
+    lager:info(io_lib:format("getClusterStatus(Result): ~p", [Json])),
     {ok, Req2} = cowboy_req:reply(200, [{<<"Content-Type">>, <<"text/plain">>}], Json, Req),
     {ok, Req2, State}.
 

@@ -7,3 +7,6 @@ erl_shib.ini
 *.plt
 *~
 Mnesia.*
+log
+console.log
+error.log

@@ -21,19 +21,12 @@ fetchAll_test_() ->
       end}
      }.
 
-%fetchGroupBy_test_() ->
-%    {timeout, 1200,
-%    fun() ->
-%        {ok, Lst} = thrift_hive:fetch_all("select c1, count(*) from test group by c1"),
-%        ?assertEqual(["a\t2", "b\t2", "c\t1", "d\t1", "e\t1", "f\t1"], Lst)
-%    end}.
-
 getClusterStatus_test_() -> 
     {timeout, 1200,
      {setup, fun start/0, fun stop/1, 
       fun() ->
               {ok, Lst} = thrift_hive:fetch_all_async("select c1, count(*) from test group by c1"),
-              ?debugVal(Lst),
+              %?debugVal(Lst),
               {ok, Lst}
       end}
     }.

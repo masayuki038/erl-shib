@@ -45,7 +45,7 @@ update_test() ->
     H = create_history1(),
     history:update_history(H),
     H2 = H#history{hql = "select * from tests2"},
-    ?debugVal(H2),
+    %?debugVal(H2),
     history:update_history(H2),
     L = history:get_history("Test1"),
     #history{hql = Hql} = L,
@@ -59,20 +59,15 @@ histories_to_json_test() ->
     history:update_history(H1),
     history:update_history(H2),
     Histories = history:get_histories(),
-    ?debugVal(Histories),
+    %%?debugVal(Histories),
     Structured = lists:map(fun(History) -> ?record_to_struct(history, History) end, Histories),
-    ?debugVal(Structured),
+    %%?debugVal(Structured),
     Json = jiffy:encode(Structured),   
-    error_logger:info_report(Json).
+    lager:info(Json).
     
 create_history1() ->
     history:create_history("Test1", "select * from test", 1, iso8601:format({{2013, 6, 29}, {19, 38, 22}}), iso8601:format({{2013, 6, 29}, {19, 39, 41}})).
 
-%create_history1() ->
-%    history:create_history("Test1", "select * from tests", 1, undefined, undefined).
-    
 create_history2() ->
     history:create_history("Test2", "select * from test", 1, iso8601:format({{2013, 6, 29}, {19, 38, 21}}), iso8601:format({{2013, 6, 29}, {19, 39, 42}})).
     
-%create_history2() ->
-%    history:create_history("Test2", "select * from tests", 1, undefined, undefined).

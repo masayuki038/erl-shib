@@ -10,7 +10,7 @@ json_encode1_test() ->
 json_encode2_test() ->
     In = {[{event, query_done}, {data, {[{id, aaa}]}}]},
     JsonStr = jiffy:encode(In),
-    ?debugVal(JsonStr),
+    %%?debugVal(JsonStr),
     ?assertEqual(<<"{\"event\":\"query_done\",\"data\":{\"id\":\"aaa\"}}">>, JsonStr).
 
 json_decode_test() ->
@@ -46,7 +46,7 @@ execute_query_test_() ->
              Executing = TestHistory#history{status = executing},
              {atomic, ok} = history:update_history(Executing),
              {ok, Executed} = websocket_handler:execute_query(TestHistory),
-             #history{query_id = Qid, status = Status} = Executed,
+             #history{status = Status} = Executed,
              ?assertEqual(executed, Status)
      end
     }.

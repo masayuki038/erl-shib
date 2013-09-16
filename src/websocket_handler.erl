@@ -12,22 +12,22 @@
 -include("history.hrl").
 
 init({tcp, http}, _Req, _Opts) ->
-    error_logger:info_report("init/3"),
+    lager:info("init/3"),
     {upgrade, protocol, cowboy_websocket}.
 
 websocket_init(_TransportName, Req, _Opts) -> 
-    error_logger:info_report("websocket_init/3"),
+    lager:info("websocket_init/3"),
     {ok, Req, undefined_state}.
  
 websocket_handle({text, Msg}, Req, State) ->
-    error_logger:info_report("websocket_handle/3a"),
-    error_logger:info_report(Msg),
+    lager:info("websocket_handle/3a"),
+    lager:info(Msg),
     case jiffy:decode(Msg) of
         {[{<<"event">>, <<"send_query">>}, {<<"data">>, Hql}]} ->
             {ok, Updated} = create_query(Hql),
             erlang:start_timer(1000, self(), Updated),
             #history{query_id = Qid} = Updated,
-            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
+            lager:info(io:format("Qid: ~p~n", [Qid])),
             {
                 reply, 
                 {
@@ -43,15 +43,15 @@ websocket_handle({text, Msg}, Req, State) ->
             }
     end;
 websocket_handle(_Data, Req, State) ->
-    error_logger:info_report("websocket_handle/3b"),
+    lager:info("websocket_handle/3b"),
     {ok, Req, State}.
  
 websocket_info({timeout, _Ref, History}, Req, State) ->
-    error_logger:info_report("websocket_info/3a"),
+    lager:info("websocket_info/3a"),
     case execute_query(History) of
         {ok, Updated} ->
             #history{query_id = Qid} = Updated,
-            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
+            lager:info(io:format("Qid: ~p~n", [Qid])),
             {
                 reply, 
                 {
@@ -62,7 +62,7 @@ websocket_info({timeout, _Ref, History}, Req, State) ->
             };
         {canceled, Canceled} ->
             #history{query_id = Qid} = Canceled,
-            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
+            lager:info(io:format("Qid: ~p~n", [Qid])),
             {
                 reply, 
                 {
@@ -73,7 +73,7 @@ websocket_info({timeout, _Ref, History}, Req, State) ->
             };
 	{failed, Failed} ->
             #history{query_id = Qid} = Failed,
-            error_logger:info_report(io:format("Qid: ~p~n", [Qid])),
+            lager:info(io:format("Qid: ~p~n", [Qid])),
             {
                 reply, 
                 {
@@ -84,16 +84,16 @@ websocket_info({timeout, _Ref, History}, Req, State) ->
             }
     end;           
 websocket_info(_Info, Req, State) ->
-    error_logger:info_report("websocket_info/3b"),
+    lager:info("websocket_info/3b"),
     {ok, Req, State}.
  
 websocket_terminate(_Reason, _Req, _State) -> 
-    error_logger:info_report("websocket_terminate/3"),
+    lager:info("websocket_terminate/3"),
     ok.
 
 create_query(Hql) ->
     Qid = hive_query:generate_id(Hql, erlang:localtime()),
-    error_logger:info_report(io_lib:format("generated id: ~p", [Qid])),
+    lager:info(io_lib:format("generated id: ~p", [Qid])),
     History = create_history(Qid, Hql),
     {atomic, ok} = history:update_history(History),
     {ok, History}.
@@ -115,7 +115,7 @@ execute_query(History) ->
             Report = ["failed to execute query",
                       {method, fetch_all},
                       {stacktrace, erlang:get_stacktrace()}],
-	    error_logger:error_report(Report),
+            lager:error(Report),
             Failed = History#history{status = error, end_at = iso8601:format(erlang:localtime())},
             {atomic, ok} = history:update_history(Failed),
 	    {failed, Failed}
@@ -125,7 +125,7 @@ on_executed(Results, History) ->
     #history{query_id = Qid} = History,
     Fetched = History#history{status = fetched},
     {atomic, ok} = history:update_history(Fetched),
-    error_logger:info_report(io_lib:format("ResultAsBinary size: : ~p", [length(Results)])),
+    lager:info(io_lib:format("ResultAsBinary size: : ~p", [length(Results)])),
     Result = create_result(Qid, Results),
     {atomic, ok} = history:update_result(Result),
     Executed = History#history{status = executed, end_at = iso8601:format(erlang:localtime())},

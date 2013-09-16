@@ -12,7 +12,7 @@ init(_Transport, Req, []) ->
 handle(Req, State) ->
     {BinaryQid, Req2} = cowboy_req:binding(qid, Req),
     Qid = binary_to_list(BinaryQid),
-    error_logger:info_report(io_lib:format("Qid: ~p", [Qid])),
+    lager:info(io_lib:format("Qid: ~p", [Qid])),
     #query_result{result = Result} = history:get_result(Qid),
     {ok, Req2} = cowboy_req:reply(200, [{<<"Content-Type">>, <<"text/plain">>}], string:join(Result, "\n"), Req),
     {ok, Req2, State}.

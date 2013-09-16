@@ -8,5 +8,5 @@ get_request_prefix() ->
         undefined -> Prefix = "";
         _ -> Prefix = PrefixTmp
     end,
-    error_logger:info_report("Prefix ~p", [Prefix]),
+    lager:info("Prefix ~p", [Prefix]),
     Prefix.    

@@ -4,7 +4,7 @@
 
 -export([init/3, handle/2, terminate/3]).
 
-init({tcp, http}, Req, Opts) ->
+init({tcp, http}, Req, _Opts) ->
     {ok, Req, undefined_state}.
 
 handle(Req, State) ->    
