@@ -11,3 +11,4 @@ log
 console.log
 error.log
 rel/erl_shib
+cscope.*
