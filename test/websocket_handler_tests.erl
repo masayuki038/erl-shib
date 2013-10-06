@@ -56,9 +56,11 @@ start_all() ->
     ok = application:start(econfig),
     ok = econfig:register_config(erl_shib, ["../erl_shib.ini"], [autoreload]),    
     true = econfig:subscribe(erl_shib),
-    start_mnesia().
+    start_mnesia(),
+    ok = hive_server_mock:start().
 
 stop_all(_Result) ->
+    ok = hive_server_mock:stop(),
     stop_mnesia(_Result),
     ok = application:stop(econfig),
     ok = application:stop(gproc),

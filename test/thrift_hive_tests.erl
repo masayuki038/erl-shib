@@ -36,9 +36,10 @@ start() ->
     ok = application:start(econfig),
     ok = econfig:register_config(erl_shib, ["../erl_shib.ini"], [autoreload]),    
     true = econfig:subscribe(erl_shib),
-    ok.
+    ok = hive_server_mock:start().
 
 stop(_Result) ->
+    ok = hive_server_mock:stop(),
     ok = application:stop(econfig),
     ok = application:stop(gproc),
     ok.
