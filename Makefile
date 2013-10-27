@@ -58,7 +58,8 @@ dialyze-with-deps:
 	dialyzer --check_plt --plt .$(APP_NAME)_deps.plt -c .
 	dialyzer --plts ~/.dialyzer.plt .$(APP_NAME)_deps.plt --src src --no_native \
 	    -Wunmatched_returns -Werror_handling -Wrace_conditions \
-	    -Wunderspecs -Woverspecs
+	    -Wunderspecs -Woverspecs | \
+            fgrep -v -f ./.dialyzer.ignore-warnings
 
 dialyze:
 	dialyzer --plts ~/.dialyzer.plt --src src --no_native \

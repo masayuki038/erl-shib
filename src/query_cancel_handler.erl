@@ -10,10 +10,10 @@ init(_Transport, Req, []) ->
     {ok, Req, undefined}.
 
 handle(Req, State) ->
-   {BinaryQid, Req2} = cowboy_req:binding(qid, Req),
+    {BinaryQid, Req2} = cowboy_req:binding(qid, Req),
     Qid = binary_to_list(BinaryQid),
     History = history:get_history(Qid),
-    history:update_history(History#history{status = canceled}),
+    {atomic, _} = history:update_history(History#history{status = canceled}),
     {ok, Req3} = cowboy_req:reply(200, [], <<"">>, Req2),
     {ok, Req3, State}.
 
