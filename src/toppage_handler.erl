@@ -15,6 +15,7 @@ handle(Req, State) ->
 terminate(_Reason, _Req, _State) ->
     ok.
 
+-spec get_html() -> any().
 get_html() ->
     Host = econfig:get_value(erl_shib, "server", "host"),
     Port = econfig:get_value(erl_shib, "server", "port"),

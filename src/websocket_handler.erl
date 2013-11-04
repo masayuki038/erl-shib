@@ -91,6 +91,7 @@ websocket_terminate(_Reason, _Req, _State) ->
     lager:info("websocket_terminate/3"),
     ok.
 
+-spec create_query(binary()) -> {ok, history()}.
 create_query(Hql) ->
     Qid = hive_query:generate_id(Hql, erlang:localtime()),
     lager:info(io_lib:format("generated id: ~p", [Qid])),
@@ -98,6 +99,7 @@ create_query(Hql) ->
     {atomic, ok} = history:update_history(History),
     {ok, History}.
 
+-spec execute_query(history()) -> {ok|canceled|failed, history()}.
 execute_query(History) ->
     #history{query_id = Qid, hql = Hql} = History,
     try thrift_hive:fetch_all(Hql) of
@@ -121,6 +123,7 @@ execute_query(History) ->
 	    {failed, Failed}
     end.
 
+-spec on_executed(list(), history()) -> {ok, history()}.
 on_executed(Results, History) ->
     #history{query_id = Qid} = History,
     Fetched = History#history{status = fetched},
@@ -132,8 +135,10 @@ on_executed(Results, History) ->
     {atomic, ok} = history:update_history(Executed),
     {ok, Executed}.
     
+-spec create_history([integer()], binary()) -> history().
 create_history(Qid, Hql) ->
     history:create_history(Qid, Hql, executing, iso8601:format(erlang:localtime()), undefined).
 
+-spec create_result(undefined | [integer()], list()) -> query_result().
 create_result(Qid, Results) ->
     history:create_result(Qid, Results).

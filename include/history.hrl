@@ -1,5 +1,8 @@
--record(history, {query_id, hql, status, start_at, end_at}).
--record(query_result, {query_id, result}).
+-record(history, {query_id :: [integer()], hql :: binary(), status, start_at, end_at}).
+-type history()::#history{}.
+
+-record(query_result, {query_id :: [integer()], result}).
+-type query_result()::#query_result{}.
 
 -define(record_to_struct(RecordName, Record),
   {lists:zip(

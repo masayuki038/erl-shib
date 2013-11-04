@@ -2,6 +2,7 @@
 
 -compile(export_all).
 
+-spec get_request_prefix() -> any().
 get_request_prefix() ->
     PrefixTmp = econfig:get_value(erl_shib, "server", "prefix"),
     case PrefixTmp of 
