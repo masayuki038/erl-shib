@@ -1,10 +1,10 @@
 ; server to connect from client with http/websocket
 [server]
-host=192.168.80.83
-port=8082
+host=127.0.0.1
+port=8080
 prefix=
 
 ; hive server
 [hive]
-host=10.0.54.91
+host=127.0.0.1
 port=10000

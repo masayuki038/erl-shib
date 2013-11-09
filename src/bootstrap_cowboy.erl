@@ -3,7 +3,6 @@
 -export([start/0]).
 
 start() ->
-    ok = application:load(lager),
     application:set_env(lager, handlers, [
       {lager_console_backend, info},
       {lager_file_backend, [
@@ -11,13 +10,6 @@ start() ->
         {"console.log", info, 10485760, "$D0", 5}
       ]}
     ]),
-    lager:start(),
-    ok = application:start(crypto),
-    ok = application:start(ranch),
-    ok = application:start(cowlib),
-    ok = application:start(cowboy),
-    ok = application:start(gproc),
-    ok = application:start(econfig),
     ok = econfig:register_config(erl_shib, ["./erl_shib.ini"], [autoreload]),
     true = econfig:subscribe(erl_shib),
     history:do_this_once(),
