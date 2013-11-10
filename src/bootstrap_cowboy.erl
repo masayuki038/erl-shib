@@ -13,8 +13,14 @@ start() ->
     ok = econfig:register_config(erl_shib, ["./erl_shib.ini"], [autoreload]),
     true = econfig:subscribe(erl_shib),
     history:do_this_once(),
-    history:start(),    
-
+    history:start(),
+    case econfig:get_value(erl_shib, "hive", "type") of
+        "hive" ->
+            ok;
+        "mock" ->
+	    ok = hive_server_mock:start()
+    end,
+    
     Prefix = helper:get_request_prefix(),
     Dispatch = cowboy_router:compile([
         {'_', [

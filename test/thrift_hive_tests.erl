@@ -25,9 +25,8 @@ getClusterStatus_test_() ->
     {timeout, 1200,
      {setup, fun start/0, fun stop/1, 
       fun() ->
-              {ok, Lst} = thrift_hive:fetch_all_async("select c1, count(*) from test group by c1"),
-              %?debugVal(Lst),
-              {ok, Lst}
+              {ok, Ret} = thrift_hive:get_cluster_status(),
+              ?assertEqual({hiveClusterStatus, 1, 1, 1, 1, 1, 1}, Ret)
       end}
     }.
 
