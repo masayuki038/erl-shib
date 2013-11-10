@@ -6,6 +6,7 @@ prefix=
 
 ; hive server
 [hive]
+; type = (hive|mock)
 type=hive
 host=127.0.0.1
 port=10000
